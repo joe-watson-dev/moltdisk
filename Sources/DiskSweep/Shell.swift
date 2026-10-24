@@ -6,10 +6,13 @@ enum Shell {
         let output: String
     }
 
-    static func runSync(_ executable: String, _ args: [String], includeStderr: Bool = false) -> Result {
+    static func runSync(_ executable: String, _ args: [String], includeStderr: Bool = false, environment: [String: String]? = nil) -> Result {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: executable)
         process.arguments = args
+        if let environment {
+            process.environment = ProcessInfo.processInfo.environment.merging(environment) { _, new in new }
+        }
         let out = Pipe()
         process.standardOutput = out
         process.standardError = includeStderr ? out : FileHandle.nullDevice
@@ -26,12 +29,21 @@ enum Shell {
     }
 
     /// Runs a process on a GCD thread so the Swift concurrency pool never blocks on it.
-    static func run(_ executable: String, _ args: [String], includeStderr: Bool = false) async -> Result {
+    static func run(_ executable: String, _ args: [String], includeStderr: Bool = false, environment: [String: String]? = nil) async -> Result {
         await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                continuation.resume(returning: runSync(executable, args, includeStderr: includeStderr))
+                continuation.resume(returning: runSync(executable, args, includeStderr: includeStderr, environment: environment))
             }
         }
+    }
+
+    /// Asks git whether `name` is gitignored in `project`. Scanned projects may be untrusted clones, so git runs
+    /// without their hooks or fsmonitor, without system/global config, and without reading the index.
+    /// Exit status: 0 ignored, 1 not ignored, 128 not a git repo.
+    static func gitCheckIgnore(project: URL, name: String) async -> Result {
+        await run("/usr/bin/git", ["-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null",
+                                   "-C", project.path, "check-ignore", "--no-index", "-q", "--", name],
+                  environment: ["GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_TERMINAL_PROMPT": "0"])
     }
 
     static func xcrun(_ args: [String], includeStderr: Bool = false) async -> Result {

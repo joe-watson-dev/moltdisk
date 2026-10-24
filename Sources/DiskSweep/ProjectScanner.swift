@@ -248,7 +248,7 @@ extension Scanner {
             var safety = f.rule.safety
             var note = "\(f.rule.ecosystem) — \(f.rule.note)"
             if f.rule.gitCheck {
-                let r = await Shell.run("/usr/bin/git", ["-C", f.project.path, "check-ignore", "-q", f.url.lastPathComponent])
+                let r = await Shell.gitCheckIgnore(project: f.project, name: f.url.lastPathComponent)
                 if r.status != 0 {
                     safety = .review
                     note += r.status == 1 ? " · not in .gitignore, check it isn't source code" : " · not a git repo, check it's generated output"

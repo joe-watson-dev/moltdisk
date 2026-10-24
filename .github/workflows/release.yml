@@ -1,0 +1,49 @@
+# Builds DiskSweep.app and publishes it as a GitHub release whenever the app changes on main.
+# The landing page links to releases/latest/download/DiskSweep.zip, so it always serves the newest build.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Sources/**"
+      - "Resources/**"
+      - "Package.swift"
+      - "scripts/build-app.sh"
+      - ".github/workflows/release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-15
+    env:
+      VERSION: "1.0.${{ github.run_number }}"
+      BUILD: "${{ github.run_number }}"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build DiskSweep.app
+        run: ./scripts/build-app.sh
+
+      - name: Zip
+        run: |
+          cd build
+          ditto -c -k --sequesterRsrc --keepParent DiskSweep.app DiskSweep.zip
+          shasum -a 256 DiskSweep.zip | tee DiskSweep.zip.sha256
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION" build/DiskSweep.zip build/DiskSweep.zip.sha256 \
+            --target "$GITHUB_SHA" \
+            --title "DiskSweep $VERSION" \
+            --generate-notes \
+            --notes "macOS 15 or later, Apple silicon. Ad-hoc signed: the first time, right-click DiskSweep.app › Open."
