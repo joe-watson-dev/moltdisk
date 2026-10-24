@@ -349,6 +349,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
   -webkit-background-clip: text; background-clip: text; color: transparent; pointer-events: none; user-select: none; }
 .faq-list { width: 100%; }
 .faq h2 { font-size: clamp(30px, 3.6vw, 44px); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; }
+.faq h2 span { display: block; color: var(--brand); }
 .faq-head p { color: var(--muted); font-size: 17px; max-width: 26ch; }
 .faq-list { display: grid; }
 .faq details { position: relative; padding-block: 4px; }
@@ -823,7 +824,7 @@ html.js .sec.on { opacity: 1; transform: none; }
 <div class="after">
 <section class="faq wrap reveal sec" id="faq" aria-labelledby="faq-title">
   <div class="faq-head">
-    <h2 id="faq-title">Before you sweep.</h2>
+    <h2 id="faq-title">FAQs: <span>before you sweep.</span></h2>
     <p>Straight answers about cleaning a developer Mac.</p>
   </div>
   <div class="faq-list">
