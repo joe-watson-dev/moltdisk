@@ -15,7 +15,7 @@ DiskSweep scans a developer Mac for reclaimable space (`node_modules` and build 
 
 ## Highlights
 
-- **Every project, every language.** JS, Python, Java/Spring, Rust, .NET, Swift, Flutter, Elixir and more. A folder only counts when the project file next to it proves it.
+- **Every project, every language.** JS, Python, Java/Spring, Rust, .NET, Swift, Flutter, Elixir and more. Generic names like `build` or `dist` only count when the project file next to them proves it.
 - **Old simulators and runtimes**, removed with `xcrun simctl`, the way Xcode does it.
 - **Editor extensions by real use.** VS Code, Cursor, Windsurf, Antigravity, Kiro and other VS Code-based editors, plus JetBrains IDEs. Extensions you used recently are locked.
 - **Running apps stay locked.** Caches of open apps can't be ticked, and DiskSweep checks again right before it deletes.
@@ -25,7 +25,7 @@ DiskSweep scans a developer Mac for reclaimable space (`node_modules` and build 
 
 Download `DiskSweep.zip` from [Releases](https://github.com/joe-watson-sbf/disk-sweep/releases), unzip it and move `DiskSweep.app` to Applications.
 
-The app is ad-hoc signed, not notarized, so the first time macOS will block it: right-click `DiskSweep.app` › **Open**, then confirm. To read the Trash and some caches, grant **Full Disk Access** in System Settings › Privacy & Security.
+The app is ad-hoc signed, not notarized, so the first time macOS will block it: open **System Settings › Privacy & Security** and click **Open Anyway**. To read the Trash and some caches, grant **Full Disk Access** in System Settings › Privacy & Security.
 
 ## Build from source
 

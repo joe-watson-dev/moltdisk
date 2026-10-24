@@ -2,11 +2,11 @@
 
 > DiskSweep is a free, native macOS app that frees up disk space on developer Macs. It finds what developer tools leave behind (node_modules and build folders in any language, Xcode DerivedData, old iOS simulators and runtimes, package manager caches, unused editor extensions, app caches and logs), shows the size and a safety label for every item, and moves only what you tick to the Trash.
 
-Requirements: macOS 15 Sequoia or later, Apple silicon. Price: free, no subscription. The app is ad-hoc signed, not notarized: the first time, right-click DiskSweep.app and choose Open.
+Requirements: macOS 15 Sequoia or later, Apple silicon. Price: free, no subscription. The app is ad-hoc signed, not notarized: the first time, open System Settings › Privacy & Security and click Open Anyway.
 
 ## What it cleans
 
-- Project leftovers: node_modules, .next, dist, build, target (Maven, Rust), .gradle, .venv and __pycache__, bin/obj (.NET), .build (SwiftPM), Pods, .dart_tool and more. A folder only counts when the project file next to it (package.json, pom.xml, Cargo.toml, pyproject.toml…) proves it.
+- Project leftovers: node_modules, .next, dist, build, target (Maven, Rust), .gradle, .venv and __pycache__, bin/obj (.NET), .build (SwiftPM), Pods, .dart_tool and more. node_modules is recognised by name; generic names like build, dist, bin or target only count when the project file next to them (package.json, pom.xml, Cargo.toml, pyproject.toml…) proves it.
 - Xcode: DerivedData, Archives, iOS DeviceSupport, SwiftUI Previews.
 - iOS simulators and runtimes, removed with `xcrun simctl delete` / `simctl runtime delete`, never `rm`.
 - Package caches: npm, npx, pnpm, Yarn, Bun, Homebrew, CocoaPods, Gradle, Maven, NuGet, pub, Composer, Go, Cargo, pip, SwiftPM, Deno.
