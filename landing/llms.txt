@@ -1,0 +1,29 @@
+# DiskSweep
+
+> DiskSweep is a free, native macOS app that frees up disk space on developer Macs. It finds what developer tools leave behind (node_modules and build folders in any language, Xcode DerivedData, old iOS simulators and runtimes, package manager caches, unused editor extensions, app caches and logs), shows the size and a safety label for every item, and moves only what you tick to the Trash.
+
+Requirements: macOS 15 Sequoia or later, Apple silicon. Price: free, no subscription. The app is ad-hoc signed, not notarized: the first time, right-click DiskSweep.app and choose Open.
+
+## What it cleans
+
+- Project leftovers: node_modules, .next, dist, build, target (Maven, Rust), .gradle, .venv and __pycache__, bin/obj (.NET), .build (SwiftPM), Pods, .dart_tool and more. A folder only counts when the project file next to it (package.json, pom.xml, Cargo.toml, pyproject.toml…) proves it.
+- Xcode: DerivedData, Archives, iOS DeviceSupport, SwiftUI Previews.
+- iOS simulators and runtimes, removed with `xcrun simctl delete` / `simctl runtime delete`, never `rm`.
+- Package caches: npm, npx, pnpm, Yarn, Bun, Homebrew, CocoaPods, Gradle, Maven, NuGet, pub, Composer, Go, Cargo, pip, SwiftPM, Deno.
+- Editors and IDEs: VS Code, Cursor, Windsurf, Antigravity, Kiro, VSCodium and other VS Code-based editors (each extension with its real name and last use), JetBrains IDEs and Android Studio (old versions left after upgrades, caches, logs).
+- App caches (Chrome, Brave, Edge, Arc, Slack, Discord, Notion and other Electron apps), logs, large files in Downloads, and the Trash.
+
+## Safety
+
+- Files go to the Trash by default; permanent delete is an explicit option.
+- Caches and data of running apps are locked and checked again right before deleting.
+- Extensions used in the last 30 days, recently installed ones and the active theme are locked.
+- A hard guard refuses anything outside the home folder and protected folders such as Documents, Desktop, Keychains, Preferences, Containers and Application Support (except known cache folders).
+- Not covered: Time Machine local snapshots, root-owned simulator volumes in /Library/Developer/CoreSimulator, Homebrew in /opt/homebrew (use `brew cleanup`).
+
+## Links
+
+- [Download the latest version (zip)](https://github.com/joe-watson-sbf/disk-sweep/releases/latest/download/DiskSweep.zip)
+- [Releases and changelog](https://github.com/joe-watson-sbf/disk-sweep/releases)
+- [Source code and README](https://github.com/joe-watson-sbf/disk-sweep)
+- [Website](https://joe-watson-sbf.github.io/disk-sweep/)
