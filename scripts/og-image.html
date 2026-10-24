@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!-- Social sharing card (1200×630). Rendered to landing/og-image.png by scripts/make-og-image.sh. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600;800&family=Geist+Mono:wght@400&display=block">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body { background: #061110; font-family: Geist, system-ui, sans-serif; color: #F0FDFA; position: relative; -webkit-font-smoothing: antialiased; }
+  /* Teal glass light from both top corners, plus a pool of light under the app window. */
+  .glow { position: absolute; inset: 0;
+    background:
+      radial-gradient(48% 70% at 0% 0%, rgb(45 212 191 / .30), transparent 70%),
+      radial-gradient(48% 70% at 100% 0%, rgb(45 212 191 / .22), transparent 70%),
+      radial-gradient(45% 55% at 50% 100%, rgb(20 184 166 / .45), transparent 75%); }
+  .grain { position: absolute; inset: 0; opacity: .5;
+    background-image: radial-gradient(rgb(255 255 255 / .035) 1px, transparent 1px); background-size: 3px 3px; }
+  .top { position: absolute; top: 46px; left: 0; right: 0; display: grid; justify-items: center; text-align: center; gap: 18px; }
+  .icon { width: 84px; height: 84px; filter: drop-shadow(0 16px 30px rgb(13 148 136 / .55)); }
+  h1 { font-size: 66px; line-height: 1; font-weight: 800; letter-spacing: -0.045em; }
+  h1 span { display: block; background: linear-gradient(180deg, #5EEAD4, #2DD4BF); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 4px; }
+  /* The real app, tilted back and cropped by the bottom edge. */
+  .stage { position: absolute; left: 50%; bottom: -150px; width: 940px; transform: translateX(-50%) perspective(1600px) rotateX(18deg); transform-origin: 50% 100%; }
+  .window { border-radius: 16px; overflow: hidden; background: #1C1C1E;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / .10), 0 -10px 80px rgb(45 212 191 / .35), 0 40px 80px rgb(0 0 0 / .6); }
+  .bar { display: flex; gap: 8px; align-items: center; padding: 11px 14px; background: #2C2C2E; }
+  .bar i { width: 12px; height: 12px; border-radius: 50%; }
+  .window img { display: block; width: 100%; }
+  .fade { position: absolute; left: 0; right: 0; bottom: 0; height: 190px; background: linear-gradient(rgb(6 17 16 / 0), rgb(6 17 16 / .85) 55%, #061110 80%); }
+  .meta { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font-family: "Geist Mono", monospace; font-size: 15px; color: rgb(204 251 241 / .75); letter-spacing: .02em; }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="grain"></div>
+  <div class="top">
+    <img class="icon" src="../landing/icon.png" alt="">
+    <h1>The Mac cleaner<span>made for developers.</span></h1>
+  </div>
+  <div class="stage">
+    <div class="window">
+      <div class="bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div>
+      <img src="../landing/hero.jpg" alt="">
+    </div>
+  </div>
+  <div class="fade"></div>
+  <p class="meta">DiskSweep · macOS 15+ · Apple silicon</p>
+</body>
+</html>

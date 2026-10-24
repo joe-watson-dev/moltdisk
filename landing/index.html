@@ -1,7 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>DiskSweep</title>
+<title>DiskSweep – Mac Cleaner for Developers: Free Up Disk Space</title>
+<meta name="description" content="Reclaim gigabytes eaten by node_modules, Xcode DerivedData, old iOS simulators, npm caches and unused VS Code extensions. Native, Trash-first, no subscription.">
+<meta name="keywords" content="mac cleaner, mac cleaner for developers, free up disk space mac, mac storage full, system data mac, clean up mac storage, clear cache mac, delete node_modules, clear xcode derived data, delete old ios simulators, xcrun simctl delete, clear npm cache, pnpm store prune, gradle cache cleanup, remove unused vs code extensions, cursor cache, jetbrains old versions cleanup, cleanmymac alternative, free mac cleaner, developer disk cleanup">
+<meta name="author" content="Joe Watson">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://joe-watson-sbf.github.io/disk-sweep/">
+<meta name="theme-color" content="#071211">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<!-- Social sharing -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DiskSweep">
+<meta property="og:url" content="https://joe-watson-sbf.github.io/disk-sweep/">
+<meta property="og:title" content="DiskSweep – Mac Cleaner for Developers: Free Up Disk Space">
+<meta property="og:description" content="Reclaim gigabytes eaten by node_modules, Xcode DerivedData, old iOS simulators, npm caches and unused VS Code extensions. Native, Trash-first, no subscription.">
+<meta property="og:image" content="https://joe-watson-sbf.github.io/disk-sweep/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="DiskSweep app window under the headline The Mac cleaner made for developers">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DiskSweep – Mac Cleaner for Developers: Free Up Disk Space">
+<meta name="twitter:description" content="Reclaim gigabytes eaten by node_modules, Xcode DerivedData, old iOS simulators, npm caches and unused VS Code extensions. Native, Trash-first, no subscription.">
+<meta name="twitter:image" content="https://joe-watson-sbf.github.io/disk-sweep/og-image.png">
+<meta name="twitter:image:alt" content="DiskSweep app window under the headline The Mac cleaner made for developers">
 <meta name="claude:viewport-fit-sides" content="cover">
+<script type="application/ld+json">
+[
+ {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "DiskSweep",
+  "description": "Reclaim gigabytes eaten by node_modules, Xcode DerivedData, old iOS simulators, npm caches and unused VS Code extensions. Native, Trash-first, no subscription.",
+  "applicationCategory": "UtilitiesApplication",
+  "applicationSubCategory": "Disk cleaner",
+  "operatingSystem": "macOS 15 or later (Apple silicon)",
+  "url": "https://joe-watson-sbf.github.io/disk-sweep/",
+  "downloadUrl": "https://github.com/joe-watson-sbf/disk-sweep/releases/latest/download/DiskSweep.zip",
+  "image": "https://joe-watson-sbf.github.io/disk-sweep/icon.png",
+  "screenshot": "https://joe-watson-sbf.github.io/disk-sweep/og-image.png",
+  "featureList": [
+   "Finds node_modules, build output and virtualenvs in JavaScript, Python, Java, Rust, .NET, Swift, Flutter and more",
+   "Removes old iOS simulators and runtimes with xcrun simctl",
+   "Cleans Xcode DerivedData, Archives and DeviceSupport",
+   "Clears npm, pnpm, Yarn, Homebrew, Gradle, Maven, CocoaPods, pip and Cargo caches",
+   "Shows which VS Code, Cursor, Windsurf and JetBrains extensions you no longer use",
+   "Locks caches of running apps and re-checks before deleting",
+   "Moves files to the Trash by default, with a safety label on every item"
+  ],
+  "offers": {
+   "@type": "Offer",
+   "price": "0",
+   "priceCurrency": "USD"
+  },
+  "author": {
+   "@type": "Person",
+   "name": "Joe Watson",
+   "url": "https://github.com/joe-watson-sbf"
+  },
+  "codeRepository": "https://github.com/joe-watson-sbf/disk-sweep"
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+   {
+    "@type": "Question",
+    "name": "Why is my Mac storage full when I barely have any files?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "On a developer Mac, the space usually goes to things you never see: node_modules and build folders in old projects, Xcode DerivedData, iOS simulator runtimes, package manager caches and editor extensions. Together they often take more room than all your apps. DiskSweep finds them and shows the size of each one."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "What is System Data on a Mac, and why is it so big?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "System Data is what macOS calls storage that doesn't fit its other categories: caches, logs, developer tools data, simulator files and more. DiskSweep cleans the developer and app parts of it, such as Xcode data, simulators, package caches and app caches. It doesn't touch Time Machine snapshots or macOS itself."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Is it safe to delete node_modules?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Yes. node_modules only holds downloaded packages, and npm, pnpm or yarn install brings them back. DiskSweep only lists a node_modules folder when a package.json sits next to it, labels it Will need reinstall, and moves it to the Trash so you can put it back."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "How do I clear Xcode DerivedData and old iOS simulators?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "DerivedData is safe to delete; Xcode rebuilds it on the next build. Old simulators and runtimes should be removed with xcrun simctl rather than deleted by hand. DiskSweep does both: it lists DerivedData, Archives and DeviceSupport with sizes, and removes simulators and runtimes through simctl, the way Xcode does."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Can I find VS Code extensions I never use?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Yes. DiskSweep reads activation logs and storage activity for VS Code, Cursor, Windsurf, Antigravity, Kiro and other VS Code-based editors, and shows each extension with its real name and last use. Extensions used in the last 30 days, recently installed ones and your active theme stay locked."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Will DiskSweep delete something an open app is using?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "No. Caches, logs and data that belong to a running app show as In use and can't be ticked. DiskSweep checks again right before it deletes, and a built-in guard refuses folders like Documents, Keychains, Preferences and app data."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Is DiskSweep an alternative to CleanMyMac?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "It has a narrower focus. General cleaners target photos, mail and system junk; DiskSweep targets what developer tools leave behind, across every language and editor, with a safety label on every item. It's a free download with no subscription."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Which Macs does DiskSweep run on?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Macs with Apple silicon running macOS 15 Sequoia or later. Download the zip, move DiskSweep.app to Applications, and the first time right-click it and choose Open, since the app isn't notarized yet."
+    }
+   }
+  ]
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "DiskSweep",
+  "url": "https://joe-watson-sbf.github.io/disk-sweep/"
+ }
+]
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
@@ -194,6 +334,22 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
 @keyframes ex-drift { from { transform: translate(0, 0); } to { transform: translate(14px, -18px); } }
 @media (prefers-reduced-motion: reduce) { .ex-bg span { animation: none; } }
 @media (max-width: 820px) { .ex-bg { inset: 20px -16px 0; } .ex-bg span:not(.m) { display: none; } .ex-bg span { font-size: 12px !important; } }
+
+
+/* FAQ: native exclusive accordion (details name="faq"); each question is an h3 for the outline. */
+.faq { padding-block: clamp(72px, 9vw, 120px) 0; display: grid; gap: 28px; max-width: 820px; }
+.faq h2 { font-size: clamp(32px, 4.4vw, 52px); line-height: 1.04; font-weight: 800; text-align: center; }
+.faq-list { display: grid; gap: 10px; }
+.faq details { border-radius: 18px; background: var(--glass); box-shadow: inset 0 0 0 1px var(--glass-line); transition: background .3s; }
+.faq details[open] { background: color-mix(in srgb, var(--brand) 7%, var(--glass)); }
+.faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 22px; border-radius: 18px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; flex: none; width: 12px; height: 12px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: translateY(-3px) rotate(45deg); transition: transform .3s; }
+.faq details[open] summary::after { transform: translateY(3px) rotate(-135deg); border-color: var(--brand); }
+.faq summary h3 { font-size: 18px; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; }
+.faq summary:focus-visible { outline-offset: -2px; }
+.faq details p { padding: 0 22px 22px; color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 62ch; }
+@media (max-width: 820px) { .faq summary { padding: 18px; } .faq summary h3 { font-size: 16px; } .faq details p { padding: 0 18px 18px; font-size: 15px; } }
 
 /* Explorer: pick a feature on the left, see its UI in one glass panel on the right */
 .explore { padding-block: 112px 0; display: grid; gap: 40px; }
@@ -488,9 +644,11 @@ html.js .sec.on { opacity: 1; transform: none; }
   html.js .reveal, html.js .sec, html.js .stagger > *, html.js .bars i, html.js .tree .meter i { opacity: 1 !important; transform: none !important; }
 }
 </style>
+</head>
+<body>
 
-<nav class="nav">
-      <a class="brand" href="#top"><img src="icon.png" alt="">DiskSweep</a>
+<nav class="nav" aria-label="Main">
+      <a class="brand" href="#top"><img src="icon.png" alt="" width="32" height="32">DiskSweep</a>
       <div class="nav-right">
         <a href="#features">Features</a>
         <a href="#safety">Safety</a>
@@ -502,7 +660,7 @@ html.js .sec.on { opacity: 1; transform: none; }
 
     <div class="hero-block">
     <header class="hero" id="top">
-      <img class="hero-icon" src="icon.png" alt="DiskSweep icon" width="132" height="132">
+      <img class="hero-icon" src="icon.png" alt="DiskSweep app icon: a broom sweeping a drive" width="132" height="132" fetchpriority="high">
       <h1>The Mac cleaner <span>made for developers.</span></h1>
       <p class="lede">Find the space your dev tools quietly eat, and clean it safely.</p>
       <div class="ctas">
@@ -531,14 +689,15 @@ html.js .sec.on { opacity: 1; transform: none; }
             <div class="m-toast" id="m-toast" role="status" aria-live="polite"></div>
           </div>
         </div>
-        <img class="m-fallback" src="hero.jpg" alt="DiskSweep showing VS Code extensions with sizes, last activity and labels like In use and Not used recently" width="2000" height="1090">
+        <img class="m-fallback" loading="lazy" src="hero.jpg" alt="DiskSweep showing VS Code extensions with sizes, last activity and labels like In use and Not used recently" width="2000" height="1090">
       </div>
     </div>
     </div>
   </div>
 </div>
 
-<main class="sheet bleed gutter">
+<div class="sheet bleed gutter">
+<main>
 <div class="feat-layer bleed gutter">
 <div class="wrap feat">
   <div class="ex-head reveal sec" id="features">
@@ -609,9 +768,9 @@ html.js .sec.on { opacity: 1; transform: none; }
 </div>
 <div class="under bleed gutter">
 <div class="wrap">
-  <section class="sweep-sec" aria-label="Before and after">
+  <section class="sweep-sec" aria-labelledby="sweep-title">
     <div class="sw-head">
-      <h2>One sweep. <span>101.4 GB back.</span></h2>
+      <h2 id="sweep-title">One sweep. <span>101.4 GB back.</span></h2>
       <p>On a typical 512 GB developer Mac, dev junk takes more space than all the apps combined. Here's the same Mac before and after.</p>
     </div>
     <div class="disk" id="disk">
@@ -630,6 +789,43 @@ html.js .sec.on { opacity: 1; transform: none; }
 </div>
 </div>
 <div class="after">
+<section class="faq wrap reveal sec" id="faq" aria-labelledby="faq-title">
+  <h2 id="faq-title">Questions developers ask</h2>
+  <div class="faq-list">
+      <details name="faq" open>
+        <summary><h3>Why is my Mac storage full when I barely have any files?</h3></summary>
+        <p>On a developer Mac, the space usually goes to things you never see: node_modules and build folders in old projects, Xcode DerivedData, iOS simulator runtimes, package manager caches and editor extensions. Together they often take more room than all your apps. DiskSweep finds them and shows the size of each one.</p>
+      </details>
+      <details name="faq">
+        <summary><h3>What is System Data on a Mac, and why is it so big?</h3></summary>
+        <p>System Data is what macOS calls storage that doesn&#x27;t fit its other categories: caches, logs, developer tools data, simulator files and more. DiskSweep cleans the developer and app parts of it, such as Xcode data, simulators, package caches and app caches. It doesn&#x27;t touch Time Machine snapshots or macOS itself.</p>
+      </details>
+      <details name="faq">
+        <summary><h3>Is it safe to delete node_modules?</h3></summary>
+        <p>Yes. node_modules only holds downloaded packages, and npm, pnpm or yarn install brings them back. DiskSweep only lists a node_modules folder when a package.json sits next to it, labels it Will need reinstall, and moves it to the Trash so you can put it back.</p>
+      </details>
+      <details name="faq">
+        <summary><h3>How do I clear Xcode DerivedData and old iOS simulators?</h3></summary>
+        <p>DerivedData is safe to delete; Xcode rebuilds it on the next build. Old simulators and runtimes should be removed with xcrun simctl rather than deleted by hand. DiskSweep does both: it lists DerivedData, Archives and DeviceSupport with sizes, and removes simulators and runtimes through simctl, the way Xcode does.</p>
+      </details>
+      <details name="faq">
+        <summary><h3>Can I find VS Code extensions I never use?</h3></summary>
+        <p>Yes. DiskSweep reads activation logs and storage activity for VS Code, Cursor, Windsurf, Antigravity, Kiro and other VS Code-based editors, and shows each extension with its real name and last use. Extensions used in the last 30 days, recently installed ones and your active theme stay locked.</p>
+      </details>
+      <details name="faq">
+        <summary><h3>Will DiskSweep delete something an open app is using?</h3></summary>
+        <p>No. Caches, logs and data that belong to a running app show as In use and can&#x27;t be ticked. DiskSweep checks again right before it deletes, and a built-in guard refuses folders like Documents, Keychains, Preferences and app data.</p>
+      </details>
+      <details name="faq">
+        <summary><h3>Is DiskSweep an alternative to CleanMyMac?</h3></summary>
+        <p>It has a narrower focus. General cleaners target photos, mail and system junk; DiskSweep targets what developer tools leave behind, across every language and editor, with a safety label on every item. It&#x27;s a free download with no subscription.</p>
+      </details>
+      <details name="faq">
+        <summary><h3>Which Macs does DiskSweep run on?</h3></summary>
+        <p>Macs with Apple silicon running macOS 15 Sequoia or later. Download the zip, move DiskSweep.app to Applications, and the first time right-click it and choose Open, since the app isn&#x27;t notarized yet.</p>
+      </details>
+  </div>
+</section>
 <div class="closing reveal sec">
     <section class="final" id="download">
       <a class="final-icon js-download" href="#download" aria-label="Download DiskSweep for Mac"><img src="icon.png" alt=""></a>
@@ -638,17 +834,17 @@ html.js .sec.on { opacity: 1; transform: none; }
       <p class="req">macOS 15 or later · Apple silicon</p>
     </section>
 </div>
-<div class="wrap">
-    <footer class="foot">
-      <div class="foot-bottom">
-        <span>Made by a developer, for developers.</span>
-        <span>© 2026 DiskSweep</span>
-      </div>
-    </footer>
-</div>
-
 </div>
 </main>
+<footer class="after">
+  <div class="wrap foot">
+    <div class="foot-bottom">
+      <span>Made by a developer, for developers.</span>
+      <span>© 2026 DiskSweep</span>
+    </div>
+  </div>
+</footer>
+</div>
 
 <script>
 document.documentElement.classList.add("js");
@@ -833,3 +1029,5 @@ document.documentElement.classList.add("js");
   }
 })();
 </script>
+</body>
+</html>
