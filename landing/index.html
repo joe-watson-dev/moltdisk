@@ -378,8 +378,9 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
 @media (prefers-reduced-motion: reduce) { .faq details::details-content, .faq summary::after { transition: none; } }
 @media (max-width: 820px) {
   .faq { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .faq-head { position: relative; top: 0; min-height: 420px; justify-items: center; text-align: center; padding-left: 0; }
-  .faq-head::before { left: 50%; transform: translate(-38%, -50%) rotate(-8deg); font-size: 440px; opacity: .45; }
+  /* The "?" floats behind on the right without adding height; the title sits left. */
+  .faq-head { position: relative; top: 0; min-height: 0; padding: 24px 0 16px; justify-items: start; text-align: left; }
+  .faq-head::before { left: auto; right: -0.12em; transform: translateY(-50%) rotate(-8deg); font-size: 340px; opacity: .45; }
   .faq summary { padding: 18px 0; } .faq summary h3 { font-size: 17px; }
   .faq details::before { left: -12px; }
   .faq details p { padding-right: 0; font-size: 15px; }
