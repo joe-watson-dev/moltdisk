@@ -9,7 +9,8 @@
 <meta name="author" content="Joe Watson">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://disksweep.vercel.app/">
-<meta name="theme-color" content="#071211">
+<meta name="theme-color" content="#07100F">
+<meta name="color-scheme" content="dark">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="alternate" type="text/plain" href="llms.txt" title="DiskSweep summary for AI assistants">
@@ -178,15 +179,8 @@
   --font: "Geist", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #07100F; --ink: #EEF4F3; --muted: #93A3A1; --line: #18282A; --brand: #2DD4BF; --brand-2: #5EEAD4;
-    --mint: #0C2421; --lilac: #171428; --peach: #241A10; --glow: #0F4A42; --glow-2: #0B211E;
-    --cta-bg: #EEF4F3; --cta-ink: #07100F; --shadow: 0 40px 90px -40px rgb(0 0 0 / .85); color-scheme: dark;
-    --final-ink: #F0FDFA; --final-muted: #A7D8D0; --final-btn-ink: #04221F; --free: #26302F; --files: #4B5755; --card-a: #0E3B35; --card-b: #0F766E; --card-glow: rgb(94 234 212 / .25); --page-glow: rgb(45 212 191 / .2); --page-glow-2: rgb(45 212 191 / .15); --glass: rgb(255 255 255 / .04); --glass-line: rgb(255 255 255 / .09); --stage-glow: rgb(20 184 166 / .45); --tile-top: #0F1B1A; --tile-bottom: #0A1312; --tile-line: #1B2A28; --tile-glow: rgb(45 212 191 / .14); --ui-1: #161D1C; --ui-2: #1F2826; --ui-edge: #2A3533; --ui-ink: #E7EEED; --ui-muted: #8C9B99;
-  }
-}
-:root[data-theme="dark"] {
+/* The site is dark only: these override the light defaults above whatever the system theme is. */
+:root {
   --bg: #07100F; --ink: #EEF4F3; --muted: #93A3A1; --line: #18282A; --brand: #2DD4BF; --brand-2: #5EEAD4;
   --mint: #0C2421; --lilac: #171428; --peach: #241A10; --glow: #0F4A42; --glow-2: #0B211E;
   --cta-bg: #EEF4F3; --cta-ink: #07100F; --shadow: 0 40px 90px -40px rgb(0 0 0 / .85); color-scheme: dark;
@@ -321,8 +315,6 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
 
 /* Features header: one very large centered title. */
 .ex-head h2 { max-width: 14ch; font-size: clamp(44px, 6.8vw, 92px) !important; line-height: 1 !important; letter-spacing: -0.05em !important; background: linear-gradient(180deg, #F0FDFA 30%, #5EEAD4); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .06em; }
-:root[data-theme="light"] .ex-head h2 { background-image: linear-gradient(180deg, #0F172A 30%, #0D9488); }
-@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .ex-head h2 { background-image: linear-gradient(180deg, #0F172A 30%, #0D9488); } }
 .ex-head p { max-width: 34em; text-wrap: balance; font-size: clamp(16px, 1.6vw, 21px) !important; margin-top: 8px; }
 
 
