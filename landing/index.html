@@ -1,0 +1,835 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiskSweep</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a product page on one centered axis — icon hero on a gradient banner with the real app, the result as one
+   six features in a plain grid, then the download on a gradient and the footer. */
+:root {
+  --bg: #FFFFFF;
+  --ink: #0B1220;
+  --muted: #5F6B7A;
+  --line: #E6ECF1;
+  --brand: #0D9488;
+  --brand-2: #2DD4BF;
+  --mint: #E6FBF6;
+  --lilac: #F1EEFE;
+  --peach: #FFF2E6;
+  --glow: #B9F5E8;
+  --glow-2: #E9FBF7;
+  --cta-bg: #0B1220;
+  --cta-ink: #FFFFFF;
+  --free: #DCE4EA;
+  --files: #9AA6A4;
+  --final-ink: #04221F;
+  --final-muted: #0B4A43;
+  --card-a: #B7F5EA; --card-b: #2DD4BF; --card-glow: rgb(255 255 255 / .55);
+  --final-btn-ink: #FFFFFF;
+  --shadow: 0 40px 90px -40px rgb(4 47 46 / .55);
+  --stage-glow: rgb(45 212 191 / .55);
+  --page-glow: rgb(45 212 191 / .28); --page-glow-2: rgb(45 212 191 / .2);
+  --glass: rgb(255 255 255 / .55); --glass-line: rgb(255 255 255 / .8);
+  --tile-top: #F7FBFA; --tile-bottom: #EEF6F4; --tile-line: #DCE9E6; --tile-glow: rgb(45 212 191 / .22);
+  --ui-1: #FFFFFF; --ui-2: #EEF3F2; --ui-edge: #D5E1DE; --ui-ink: #0B1220; --ui-muted: #6B7A78;
+  --font: "Geist", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #07100F; --ink: #EEF4F3; --muted: #93A3A1; --line: #18282A; --brand: #2DD4BF; --brand-2: #5EEAD4;
+    --mint: #0C2421; --lilac: #171428; --peach: #241A10; --glow: #0F4A42; --glow-2: #0B211E;
+    --cta-bg: #EEF4F3; --cta-ink: #07100F; --shadow: 0 40px 90px -40px rgb(0 0 0 / .85); color-scheme: dark;
+    --final-ink: #F0FDFA; --final-muted: #A7D8D0; --final-btn-ink: #04221F; --free: #26302F; --files: #4B5755; --card-a: #0E3B35; --card-b: #0F766E; --card-glow: rgb(94 234 212 / .25); --page-glow: rgb(45 212 191 / .2); --page-glow-2: rgb(45 212 191 / .15); --glass: rgb(255 255 255 / .04); --glass-line: rgb(255 255 255 / .09); --stage-glow: rgb(20 184 166 / .45); --tile-top: #0F1B1A; --tile-bottom: #0A1312; --tile-line: #1B2A28; --tile-glow: rgb(45 212 191 / .14); --ui-1: #161D1C; --ui-2: #1F2826; --ui-edge: #2A3533; --ui-ink: #E7EEED; --ui-muted: #8C9B99;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #07100F; --ink: #EEF4F3; --muted: #93A3A1; --line: #18282A; --brand: #2DD4BF; --brand-2: #5EEAD4;
+  --mint: #0C2421; --lilac: #171428; --peach: #241A10; --glow: #0F4A42; --glow-2: #0B211E;
+  --cta-bg: #EEF4F3; --cta-ink: #07100F; --shadow: 0 40px 90px -40px rgb(0 0 0 / .85); color-scheme: dark;
+  --final-ink: #F0FDFA; --final-muted: #A7D8D0; --final-btn-ink: #04221F; --free: #26302F; --files: #4B5755; --card-a: #0E3B35; --card-b: #0F766E; --card-glow: rgb(94 234 212 / .25); --page-glow: rgb(45 212 191 / .2); --page-glow-2: rgb(45 212 191 / .15); --glass: rgb(255 255 255 / .04); --glass-line: rgb(255 255 255 / .09); --stage-glow: rgb(20 184 166 / .45); --tile-top: #0F1B1A; --tile-bottom: #0A1312; --tile-line: #1B2A28; --tile-glow: rgb(45 212 191 / .14); --ui-1: #161D1C; --ui-2: #1F2826; --ui-edge: #2A3533; --ui-ink: #E7EEED; --ui-muted: #8C9B99;
+}
+* { box-sizing: border-box; }
+/* Glows and full-bleed bands must never make the page scroll sideways (clip keeps position: sticky working). */
+html, body { overflow-x: clip; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 18px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+h1, h2, h3 { margin: 0; letter-spacing: -0.025em; text-wrap: balance; font-weight: 700; }
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 8px; }
+
+/* Full-bleed bands (hero banner and closing section) reach the screen edges past the body gutter. */
+.bleed { margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.banner { background: transparent; overflow: hidden; }
+.banner-inner { max-width: 1080px; margin: 0 auto; }
+
+.nav { position: absolute; z-index: 50; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, calc((100vw - 1080px) / 2), env(safe-area-inset-right, 0px)) 12px max(16px, calc((100vw - 1080px) / 2), env(safe-area-inset-left, 0px));
+  background: transparent;
+  border-bottom: 1px solid transparent; transition: border-color .3s, background .3s; }
+.nav.scrolled { border-bottom-color: var(--glass-line); background: color-mix(in srgb, var(--bg) 72%, transparent); }
+.banner-inner { padding-top: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; letter-spacing: -0.01em; }
+.brand img { width: 32px; height: 32px; }
+.nav-right { display: flex; align-items: center; gap: 28px; font-size: 15px; color: var(--muted); }
+.nav-right a:hover { color: var(--ink); }
+.nav-dl { color: var(--ink); font-weight: 600; border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; }
+
+.dl { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: var(--cta-bg); color: var(--cta-ink); font-weight: 600; font-size: 17px; border-radius: 999px; padding: 16px 28px; transition: transform .15s; }
+.dl:hover { transform: translateY(-2px); }
+.dl svg { width: 18px; height: 18px; }
+.link { font-weight: 600; font-size: 17px; color: var(--brand); padding: 16px 8px; }
+.link:hover { text-decoration: underline; }
+.req { font-size: 13px; color: var(--muted); font-family: var(--mono); }
+
+/* Hero */
+.hero { display: grid; justify-items: center; text-align: center; gap: 22px; padding-block: 56px 48px; }
+.hero-icon { width: clamp(88px, 12vw, 132px); height: auto; filter: drop-shadow(0 22px 34px rgb(13 148 136 / .35)); }
+.hero h1 { font-size: clamp(38px, 7.2vw, 88px); line-height: 1; font-weight: 800; }
+.hero h1 span { color: var(--brand); display: block; }
+.hero .lede { font-size: clamp(17px, 2.2vw, 23px); color: var(--muted); max-width: 30em; }
+.hero .ctas { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+/* The real app, fading into the page */
+.stage { position: relative; padding-top: 8px; isolation: isolate; }
+/* The gradient sits behind the app window: a teal glow that spills out around it. */
+.stage::before { content: ""; position: absolute; z-index: -1; left: -12%; right: -12%; top: -18%; bottom: 10%; background: radial-gradient(55% 60% at 50% 45%, var(--stage-glow), transparent 72%); filter: blur(30px); pointer-events: none; }
+.window { position: relative; border-radius: 14px; overflow: hidden; background: #1C1C1E; box-shadow: var(--shadow); }
+.titlebar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #2C2C2E; position: relative; }
+.titlebar i { width: 12px; height: 12px; border-radius: 50%; }
+.titlebar span { position: absolute; left: 0; right: 0; text-align: center; font-size: 13px; font-weight: 600; color: #C7CDD3; pointer-events: none; }
+.window img { width: 100%; height: auto; }
+/* Interactive mini app (always dark, like the real window). Without JS the real screenshot shows instead. */
+.mini { display: none; grid-template-columns: 210px minmax(0, 1fr); height: 430px; color: #E7ECEB; font-size: 13px; text-align: left; }
+html.js .mini { display: grid; }
+html.js .m-fallback { display: none; }
+.m-side { background: #262A2E; padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; }
+.m-cat { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 7px 10px; border-radius: 7px; }
+.m-cat svg { width: 16px; height: 16px; color: #2DD4BF; }
+.m-cat b { font-weight: 500; color: #8E9A98; font-variant-numeric: tabular-nums; font-size: 12px; }
+.m-cat.on { background: #2563EB; } .m-cat.on b, .m-cat.on svg { color: #fff; }
+.m-main { position: relative; display: flex; flex-direction: column; min-width: 0; background: #1C1F22; }
+.m-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px 10px; }
+.m-head b { font-size: 16px; font-weight: 600; }
+.m-example { font-size: 11px; color: #8E9A98; font-family: var(--mono); background: rgb(255 255 255 / .06); border-radius: 99px; padding: 2px 8px; }
+.m-free { margin-left: auto; color: #8E9A98; font-variant-numeric: tabular-nums; }
+.m-free em { font-style: normal; color: #2DD4BF; font-weight: 600; }
+.m-cols, .m-row { display: grid; grid-template-columns: 22px minmax(0, 1fr) 76px 110px 150px; gap: 12px; align-items: center; }
+.m-cols { padding: 6px 18px; font-size: 11px; color: #8E9A98; font-weight: 600; background: rgb(255 255 255 / .03); }
+.m-rows { list-style: none; margin: 0; padding: 4px 10px; flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 1px; }
+.m-row { padding: 7px 8px; border-radius: 8px; cursor: pointer; transition: background .2s, opacity .45s ease, transform .45s cubic-bezier(.4,0,.2,1), max-height .45s ease, padding .45s ease; max-height: 60px; }
+.m-row:nth-child(odd) { background: rgb(255 255 255 / .025); }
+.m-row:hover { background: rgb(255 255 255 / .06); }
+.m-row.locked { cursor: default; opacity: .6; }
+.m-row.gone { opacity: 0; transform: translateX(60px); max-height: 0; padding-block: 0; }
+.m-check { width: 16px; height: 16px; border-radius: 4px; background: rgb(255 255 255 / .1); display: grid; place-items: center; transition: background .15s; }
+.m-row.sel .m-check { background: #2563EB; }
+.m-row.sel .m-check::after { content: ""; width: 8px; height: 4px; border: 2px solid #fff; border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
+.m-name { min-width: 0; }
+.m-name div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-name small { display: block; color: #8E9A98; font-family: var(--mono); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-size { text-align: right; font-variant-numeric: tabular-nums; }
+.m-act { color: #8E9A98; }
+.m-status { font-size: 12px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.m-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.st-safe { color: #22C55E; } .st-reinstall { color: #F97316; } .st-unused { color: #22D3EE; } .st-review { color: #EF4444; } .st-inuse { color: #8E9A98; }
+.m-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 18px; background: #262A2E; }
+.m-sel b { font-weight: 600; } .m-sel span { color: #8E9A98; margin-left: 6px; font-variant-numeric: tabular-nums; }
+.m-actions { display: flex; gap: 8px; }
+.m-trash { background: #2563EB; color: #fff; border: 0; border-radius: 7px; padding: 8px 14px; font: 600 13px var(--font); cursor: pointer; transition: transform .15s, background .2s, opacity .2s; }
+.m-trash:hover { background: #1D4ED8; } .m-trash:active { transform: scale(.97); }
+.m-trash:disabled { opacity: .4; cursor: default; }
+.m-reset { background: rgb(255 255 255 / .08); color: #E7ECEB; border: 0; border-radius: 7px; padding: 8px 12px; font: 500 13px var(--font); cursor: pointer; }
+.m-toast { position: absolute; left: 50%; bottom: 62px; transform: translate(-50%, 12px); background: #F0FDFA; color: #04221F; font-weight: 600; font-size: 13px; padding: 9px 16px; border-radius: 99px; box-shadow: 0 16px 40px -12px rgb(0 0 0 / .6); opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s cubic-bezier(.2,.8,.2,1); white-space: nowrap; }
+.m-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* Page-wide glass gradient: teal glows from the top-left and top-right corners, fixed behind everything. */
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(50% 45% at 0% 0%, var(--page-glow), transparent 70%),
+              radial-gradient(50% 45% at 100% 0%, var(--page-glow-2), transparent 70%); }
+
+
+/* The hero stays pinned once its bottom reaches the screen edge, and the rest of the page slides up over it as one
+   sheet. The hero blurs, dims and sinks slightly as it gets covered (see the script). */
+.banner { position: sticky; z-index: 1; transform-origin: 50% 100%; will-change: transform, filter;
+  /* Ends in the same tint as the top of the panel that slides over it, so its rounded corners show no dark wedge. */
+  background: linear-gradient(180deg, transparent calc(100% - 220px), color-mix(in srgb, var(--brand) 13%, var(--bg))) !important; }
+/* "One sweep" is already in place underneath; the features layer scrolls up and away to reveal it. */
+.feat-layer { position: relative; z-index: 2; border-radius: 0 0 36px 36px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 13%, var(--bg)), var(--bg) 640px); padding-bottom: 120px;
+  box-shadow: 0 1px 0 var(--glass-line), 0 50px 120px -30px rgb(0 0 0 / .6); }
+.under > .wrap { transform-origin: 50% 40%; will-change: transform, filter; }
+.under { position: sticky; z-index: 0; padding-bottom: 24px; overflow: visible;
+  background: radial-gradient(60% 420px at 50% 0%, color-mix(in srgb, var(--brand) 14%, transparent), transparent), var(--bg); }
+.after { position: relative; z-index: 1; padding-top: 1px; }
+.sheet { position: relative; z-index: 2; display: block; overflow: clip; padding-top: 1px; border-radius: 36px 36px 0 0;
+  background: radial-gradient(50% 520px at 0% 0%, var(--page-glow), transparent 70%),
+              radial-gradient(50% 520px at 100% 0%, var(--page-glow-2), transparent 70%), var(--bg);
+  box-shadow: 0 -1px 0 var(--glass-line), 0 -50px 120px -30px rgb(0 0 0 / .55); }
+.feat-layer::before { content: ""; position: absolute; top: 12px; left: 50%; width: 44px; height: 5px; margin-left: -22px; border-radius: 3px; background: var(--glass-line); }
+
+
+/* Features header: one very large centered title. */
+.ex-head h2 { max-width: 14ch; font-size: clamp(44px, 6.8vw, 92px) !important; line-height: 1 !important; letter-spacing: -0.05em !important; background: linear-gradient(180deg, #F0FDFA 30%, #5EEAD4); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .06em; }
+:root[data-theme="light"] .ex-head h2 { background-image: linear-gradient(180deg, #0F172A 30%, #0D9488); }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .ex-head h2 { background-image: linear-gradient(180deg, #0F172A 30%, #0D9488); } }
+.ex-head p { max-width: 34em; text-wrap: balance; font-size: clamp(16px, 1.6vw, 21px) !important; margin-top: 8px; }
+
+
+/* Faint dev leftovers drifting behind the features title. */
+.ex-head { position: relative; isolation: isolate; }
+.ex-bg { position: absolute; inset: 40px calc(50% - 50vw) -20px; z-index: -1; pointer-events: none; overflow: hidden; }
+.ex-bg span { position: absolute; font-family: var(--mono); color: var(--ink); white-space: nowrap; animation: ex-drift 14s ease-in-out var(--d) infinite alternate; }
+/* Some stay put, some drift. */
+.ex-bg span[data-still] { animation: none; }
+@keyframes ex-drift { from { transform: translate(0, 0); } to { transform: translate(14px, -18px); } }
+@media (prefers-reduced-motion: reduce) { .ex-bg span { animation: none; } }
+@media (max-width: 820px) { .ex-bg { inset: 20px -16px 0; } .ex-bg span:not(.m) { display: none; } .ex-bg span { font-size: 12px !important; } }
+
+/* Explorer: pick a feature on the left, see its UI in one glass panel on the right */
+.explore { padding-block: 112px 0; display: grid; gap: 40px; }
+.ex-head { display: grid; gap: 18px; justify-items: center; text-align: center; }
+.ex-head h2 { font-size: clamp(32px, 4.4vw, 52px); line-height: 1.04; font-weight: 800; }
+.ex-head p { color: var(--muted); font-size: 18px; }
+.explorer { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 28px; align-items: stretch; }
+.ex-list { display: grid; gap: 6px; align-content: start; }
+.ex-tab { text-align: left; padding: 16px 18px; border-radius: 16px; border: 1px solid transparent; background: transparent; color: var(--muted); cursor: pointer; font: inherit; font-size: 14px; display: grid; gap: 2px; transition: background .2s, border-color .2s; }
+.ex-tab b { color: var(--ink); font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.ex-tab:hover { background: var(--glass); }
+.ex-tab[aria-selected="true"] { background: var(--glass); border-color: var(--glass-line); box-shadow: inset 3px 0 0 var(--brand); }
+.ex-stage { position: relative; border-radius: 28px; border: 1px solid var(--glass-line); background: var(--glass); -webkit-backdrop-filter: blur(24px) saturate(140%); backdrop-filter: blur(24px) saturate(140%); padding: clamp(24px, 4vw, 44px); min-height: 440px; display: flex; align-items: center; box-shadow: 0 30px 80px -50px rgb(0 0 0 / .6); }
+.ex-panel { width: 100%; }
+.ex-panel .viz { align-items: center; justify-content: center; }
+.ex-panel .tree, .ex-panel .trash-win, .ex-panel .lock-viz, .ex-panel .editors-viz { max-width: 460px; margin: 0 auto; }
+.ex-panel .bars { max-width: 460px; margin: 0 auto; height: 240px; }
+
+/* Feature rows: no containers. Each visual stands on its own over a soft glow in the feature's colour (--c);
+   section title leads, feature titles are sub-heads. */
+.ex-head { padding-block: 128px 16px; }
+.ex-head h2 { font-size: clamp(38px, 5.4vw, 64px); line-height: 1.02; font-weight: 800; letter-spacing: -0.035em; }
+.f-row { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 88px); align-items: center; padding-block: 96px 0; }
+.f-row:nth-of-type(even) { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.f-row:nth-of-type(even) .f-text { order: 2; }
+.f-text { max-width: 400px; display: grid; gap: 12px; }
+.f-text h3 { font-size: clamp(22px, 2.2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; display: flex; align-items: center; gap: 10px; }
+.f-text h3::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--c, var(--brand)); box-shadow: 0 0 14px var(--c, var(--brand)); flex: none; }
+.f-text p { color: var(--muted); font-size: 17px; line-height: 1.6; }
+.f-visual { position: relative; display: grid; place-items: center; min-height: 340px; isolation: isolate; }
+.f-visual::before { content: ""; position: absolute; inset: 0 6%; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--c, var(--brand)) 30%, transparent), transparent); filter: blur(20px); pointer-events: none; }
+.f-visual .viz { width: 100%; display: flex; align-items: center; justify-content: center; flex: none; }
+.f-visual .tree, .f-visual .trash-win, .f-visual .lock-viz, .f-visual .editors-viz { width: 100%; max-width: 520px; margin: 0; }
+.f-visual .bars { width: 100%; max-width: 480px; height: 260px; margin: 0; }
+.f-visual .phone { width: 128px; } .f-visual .phone.tall { width: 146px; }
+.f-visual .tree { font-size: 13.5px; padding: 18px 20px; gap: 12px; border-radius: 16px; }
+
+/* Sweep: the same Mac before and after */
+.sweep-sec { padding-block: 128px 0; display: grid; gap: 40px; }
+.sw-head { display: grid; gap: 14px; max-width: 720px; margin-inline: auto; text-align: center; justify-items: center; }
+.sw-head h2 { font-size: clamp(34px, 4.8vw, 58px); line-height: 1.02; font-weight: 800; letter-spacing: -0.03em; }
+.sw-head h2 span { color: var(--brand); }
+.sw-head p { color: var(--muted); font-size: 18px; }
+/* The disk, as macOS's Storage view shows it. Pressing Sweep removes the dev junk from the bar. */
+.disk { position: relative; border-radius: 22px; background: var(--ui-1); box-shadow: 0 0 0 1px var(--ui-edge), 0 50px 120px -60px var(--stage-glow); overflow: hidden; color: var(--ui-ink); }
+.disk::before { content: ""; position: absolute; inset: -40% 30% auto -10%; height: 120%; background: radial-gradient(closest-side, rgb(45 212 191 / .14), transparent); pointer-events: none; }
+.disk-bar-top { display: flex; align-items: center; gap: 8px; padding: 14px 18px; background: var(--ui-2); font-size: 13px; color: var(--ui-muted); }
+.disk-bar-top .dots { display: flex; gap: 7px; margin-right: 10px; } .disk-bar-top .dots i { width: 11px; height: 11px; border-radius: 50%; background: #FF5F57; } .disk-bar-top .dots i:nth-child(2) { background: #FEBC2E; } .disk-bar-top .dots i:nth-child(3) { background: #28C840; }
+.disk-bar-top .ex { margin-left: auto; font-size: 12px; }
+.disk-body { position: relative; padding: clamp(22px, 4vw, 40px); display: grid; gap: 22px; }
+.disk-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.disk-title b { font-size: 15px; font-weight: 600; color: var(--ui-muted); display: block; margin-bottom: 6px; }
+.disk-free { font-size: clamp(40px, 6vw, 72px); font-weight: 800; letter-spacing: -0.045em; line-height: .95; font-variant-numeric: tabular-nums; transition: color .6s; }
+.disk-free small { white-space: nowrap; font-size: 16px; font-weight: 500; letter-spacing: 0; color: var(--ui-muted); margin-left: 10px; }
+.disk.done .disk-free { color: var(--brand); }
+.disk-btn { font: inherit; font-size: 15px; font-weight: 600; border: 0; border-radius: 999px; padding: 12px 22px; cursor: pointer; background: linear-gradient(135deg, #F97316, #EF4444); color: #fff; box-shadow: 0 10px 30px -10px rgb(239 68 68 / .7); transition: transform .2s, background .4s, box-shadow .4s; }
+.disk-btn:hover { transform: translateY(-1px); } .disk-btn:active { transform: scale(.97); }
+.disk-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+.disk.done .disk-btn { background: var(--ui-2); color: var(--ui-ink); box-shadow: inset 0 0 0 1px var(--ui-edge); }
+.disk-bar { display: flex; gap: 2px; height: 26px; border-radius: 8px; overflow: hidden; background: var(--free); }
+.disk-bar i { flex: var(--g) 1 0; min-width: 0; transition: flex-grow 1s cubic-bezier(.65,0,.35,1), opacity .6s; }
+.disk-bar i.gone { flex-grow: 0; opacity: 0; }
+.disk-bar .fr { flex-grow: var(--g); background: transparent; }
+.disk-key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ui-muted); }
+.disk-key span { display: inline-flex; align-items: center; gap: 7px; } .disk-key i { width: 9px; height: 9px; border-radius: 50%; }
+.junk-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.junk-row { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 14px; background: var(--ui-2); transition: opacity .5s, transform .5s cubic-bezier(.2,.8,.2,1), background .5s; }
+.junk-row .sw { width: 10px; height: 26px; border-radius: 4px; }
+.junk-row b { font-weight: 600; font-size: 15px; display: block; } .junk-row small { color: var(--ui-muted); font-size: 12.5px; }
+.junk-row .gb { font-family: "Geist Mono", ui-monospace, monospace; font-size: 14px; font-variant-numeric: tabular-nums; }
+.junk-row.gone { opacity: .35; transform: translateX(8px); }
+.junk-row.gone b { text-decoration: line-through; text-decoration-color: var(--brand); text-decoration-thickness: 2px; }
+.junk-row.gone .gb { color: var(--brand); }
+
+/* Bento: each feature shown as a piece of UI, not a paragraph */
+.bento-head { padding-block: 112px 40px; display: grid; gap: 14px; max-width: 640px; }
+.bento-head h2 { font-size: clamp(32px, 4.4vw, 52px); line-height: 1.04; font-weight: 800; }
+.bento-head p { color: var(--muted); font-size: 18px; }
+.bento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.tile { position: relative; overflow: hidden; border-radius: 24px; border: 1px solid var(--tile-line); background: var(--tile-top); padding: 26px; display: flex; flex-direction: column; gap: 20px; min-height: 340px; }
+.tile.wide { grid-column: span 2; }
+.tile h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.015em; position: relative; }
+.tile p { color: var(--muted); font-size: 15px; margin-top: 6px; max-width: 30em; position: relative; }
+.viz { position: relative; flex: 1; display: flex; align-items: flex-end; }
+.mono { font-family: var(--mono); }
+
+/* Simulators */
+.phones { display: flex; gap: 18px; align-items: flex-end; width: 100%; justify-content: center; }
+.phone { width: 112px; aspect-ratio: 9 / 19; border-radius: 22px; box-shadow: inset 0 0 0 3px var(--ui-2), 0 18px 36px -20px rgb(0 0 0 / .6); background: linear-gradient(160deg, var(--ui-2), var(--ui-1)); position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px 10px; gap: 4px; }
+.phone::before { content: ""; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 34%; height: 8px; border-radius: 99px; background: var(--ui-edge); }
+.phone b { font-size: 12px; color: var(--ui-ink); font-weight: 600; }
+.phone span { font-family: var(--mono); font-size: 11px; color: var(--ui-muted); }
+.phone .size { font-family: var(--font); font-size: 18px; font-weight: 700; color: var(--ui-ink); }
+.phone.tall { width: 128px; }
+.phone.off { opacity: .55; }
+.phone .tag { position: absolute; top: 26px; left: 10px; right: 10px; font-size: 10px; font-weight: 600; color: #22C55E; display: flex; align-items: center; gap: 5px; }
+.phone .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* Folder tree */
+.tree { width: 100%; background: var(--ui-1); box-shadow: 0 18px 40px -24px rgb(0 0 0 / .55); border-radius: 14px; padding: 14px 16px; display: grid; gap: 9px; font-family: var(--mono); font-size: 12.5px; color: var(--ui-ink); }
+.tree .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; }
+.tree .row span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tree .row em { font-style: normal; color: var(--ui-muted); }
+.tree .meter { grid-column: 1 / -1; height: 4px; border-radius: 99px; background: var(--ui-2); overflow: hidden; }
+.tree .meter i { display: block; height: 100%; border-radius: 99px; }
+
+/* Cache bars */
+.bars { width: 100%; display: flex; align-items: flex-end; gap: 12px; height: 170px; }
+.bars div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px; height: 100%; }
+.bars i { width: 100%; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, var(--brand-2), var(--brand)); }
+.bars span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.bars b { font-size: 12px; font-weight: 600; }
+
+/* Editors */
+.editors-viz { width: 100%; display: grid; gap: 14px; }
+.apps { display: flex; gap: 10px; flex-wrap: wrap; }
+.app-ico { width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center; font-weight: 700; font-size: 15px; color: #fff; box-shadow: inset 0 1px 0 rgb(255 255 255 / .25), 0 8px 18px -10px rgb(0 0 0 / .6); }
+.ext-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; background: var(--ui-1); box-shadow: 0 12px 30px -20px rgb(0 0 0 / .55); border-radius: 12px; padding: 12px 14px; color: var(--ui-ink); font-size: 13px; }
+.ext-row small { color: var(--ui-muted); font-family: var(--mono); font-size: 11px; }
+.pill { font-size: 12px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.unused { color: #22D3EE; } .pill.lock { color: var(--ui-muted); } .pill.safe { color: #22C55E; }
+
+/* Sweep tile */
+.sweep { width: 100%; display: grid; gap: 16px; }
+.sweep .num { font-size: clamp(44px, 5.6vw, 68px); font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--brand); font-variant-numeric: tabular-nums; }
+.sweep .num small { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: 0; margin-left: 10px; }
+.bar { display: flex; height: 18px; gap: 2px; border-radius: 9px; overflow: hidden; }
+.bar span { flex-basis: 0; transition: flex-grow 1.4s cubic-bezier(.2,.8,.2,1); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 8px; height: 8px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgb(127 127 127 / .35); }
+.legend .hl { color: var(--ink); font-weight: 600; }
+.note { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+/* Trash window */
+.trash-win { width: 100%; background: var(--ui-1); box-shadow: 0 20px 44px -24px rgb(0 0 0 / .6); border-radius: 14px; overflow: hidden; color: var(--ui-ink); font-size: 13px; }
+.trash-win .tb { display: flex; align-items: center; gap: 6px; padding: 9px 12px; background: var(--ui-2); }
+.trash-win .tb i { width: 10px; height: 10px; border-radius: 50%; }
+.trash-win .tb span { margin-left: auto; margin-right: auto; font-weight: 600; font-size: 12px; color: var(--ui-muted); }
+.trash-win .item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.trash-win .item + .item { background: rgb(127 127 127 / .05); }
+.trash-win .item svg { width: 26px; height: 26px; color: #60A5FA; flex: none; }
+.trash-win .item div { flex: 1; min-width: 0; }
+.trash-win .item small { display: block; color: var(--ui-muted); font-family: var(--mono); font-size: 11px; }
+.put-back { border: 0; background: var(--ui-2); color: var(--ui-ink); border-radius: 7px; padding: 5px 10px; font: 500 12px var(--font); }
+
+/* Locked row */
+.lock-viz { width: 100%; display: grid; gap: 10px; }
+.lock-row { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--ui-1); box-shadow: 0 12px 30px -20px rgb(0 0 0 / .55); border-radius: 12px; padding: 12px 14px; color: var(--ui-ink); font-size: 13px; }
+.lock-row .cb { width: 16px; height: 16px; border-radius: 4px; background: var(--ui-2); }
+.lock-row.on .cb { background: #2563EB; }
+.lock-row.dim { opacity: .55; }
+.lock-row small { display: block; color: var(--ui-muted); font-family: var(--mono); font-size: 11px; }
+
+/* Download: no card. The app icon itself is the download link, lifted on a soft teal halo. */
+.closing { max-width: 1080px; margin: clamp(32px, 5vw, 64px) auto 0; position: relative; }
+.final { padding: 72px 24px 0; display: grid; justify-items: center; text-align: center; gap: 18px; }
+.final-hint { color: var(--muted); font-size: 15px; margin-top: 4px; }
+.final .req { margin-top: -8px; }
+.final-icon { position: relative; display: block; border-radius: 36px; isolation: isolate; transition: transform .5s cubic-bezier(.2,.9,.3,1.2); }
+.final-icon::before { content: ""; position: absolute; inset: -40%; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, var(--stage-glow), transparent); filter: blur(10px); opacity: .7; transition: opacity .4s, transform .5s; }
+.final-icon img { width: clamp(120px, 14vw, 168px); height: auto; filter: drop-shadow(0 24px 40px rgb(4 47 46 / .5)); }
+.final-icon:hover { transform: translateY(-8px) rotate(-4deg) scale(1.04); }
+.final-icon:hover::before { opacity: 1; transform: scale(1.15); }
+.final-icon:active { transform: scale(.96); }
+.final h2 { font-size: clamp(40px, 6.4vw, 76px); line-height: 1; font-weight: 800; }
+.foot { display: grid; gap: 28px; padding-block: 56px 40px; }
+.foot-top { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.foot-links { display: flex; gap: 28px; font-size: 15px; color: var(--muted); }
+.foot-links a:hover { color: var(--ink); }
+.foot-bottom { display: flex; justify-content: center; gap: 6px 10px; flex-wrap: wrap; font-size: 13px; color: var(--muted); opacity: .75; text-align: center; }
+.foot-bottom span + span::before { content: "·"; margin-right: 10px; }
+
+/* Tablet and phone: the hero fills the screen, type scales down, the app runs edge to edge. */
+@media (max-width: 1024px) {
+  /* Hero text and app image stay together; spare height goes above and below them, not between. */
+  .banner > .banner-inner { min-height: 100svh; display: flex; flex-direction: column; }
+  .hero-block { flex: 1; display: flex; flex-direction: column; }
+  /* The app window takes all the height left under the text, so the screen never ends in a blank band. */
+  .stage { flex: 1; display: flex; flex-direction: column; min-height: 320px; }
+  .window { flex: 1; display: flex; flex-direction: column; max-height: none; }
+  .window img { flex: 1; min-height: 0; height: 100%; object-fit: cover; object-position: top left; }
+  .mini { flex: 1; height: auto; min-height: 380px; }
+}
+@media (max-width: 1024px) and (min-width: 821px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tile.wide { grid-column: span 2; } }
+@media (max-width: 820px) {
+  .nav-right a:not(.nav-dl) { display: none; }
+  .hero { gap: 16px; padding-block: 24px 28px; }
+  .hero .ctas { flex-direction: column; align-items: stretch; width: 100%; max-width: 360px; }
+  .hero .link { text-align: center; padding: 6px; }
+  .mini { grid-template-columns: minmax(0, 1fr); }
+  .m-side, .m-act, .m-example { display: none !important; }
+  .m-cols, .m-row { grid-template-columns: 20px minmax(0, 1fr) 64px; }
+  .m-cols span:last-child, .m-row .m-st { display: none; }
+  .m-name small { white-space: normal; }
+  .m-head { order: 0; } .m-foot { order: 1; } .m-cols { order: 2; } .m-rows { order: 3; }
+  .m-toast { bottom: auto; top: 118px; }
+  .window { -webkit-mask-image: linear-gradient(#000 62%, transparent); mask-image: linear-gradient(#000 62%, transparent); }
+  .sheet { border-radius: 28px 28px 0 0; margin-top: -28px; }
+  .feat-layer { border-radius: 0 0 28px 28px; padding-bottom: 72px; }
+  .window { border-radius: 0; margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); }
+  .ex-head { padding-block: 72px 0; }
+  .f-row, .f-row:nth-of-type(even) { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 72px 0; }
+  .f-row:nth-of-type(even) .f-text { order: 0; }
+  .f-visual { min-height: 0; }
+  .ex-head { text-align: center; justify-items: center; margin-inline: auto; padding-block: 96px 0; }
+  .ex-head h2 { font-size: 42px !important; line-height: 1.02 !important; text-wrap: balance; }
+  .ex-head p { font-size: 16px; text-wrap: balance; }
+  .f-text { gap: 10px; }
+  .f-text h3 { font-size: 26px; font-weight: 700; letter-spacing: -0.025em; }
+  .f-text h3::before { width: 8px; height: 8px; border-radius: 2px; }
+  .f-text p { font-size: 15.5px; line-height: 1.55; }
+  .f-visual .phone { width: 92px; } .f-visual .phone.tall { width: 104px; }
+  .explore { padding-block: 72px 0; gap: 28px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .ex-list { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px; scrollbar-width: none; }
+  .ex-tab { flex: none; padding: 10px 14px; border-color: var(--glass-line); }
+  .ex-tab span { display: none; }
+  .ex-tab b { font-size: 15px; }
+  .ex-tab[aria-selected="true"] { box-shadow: inset 0 -2px 0 var(--brand); }
+  .ex-stage { min-height: 340px; }
+  .sweep-sec { padding-block: 88px 0; gap: 28px; }
+  .junk-list { grid-template-columns: minmax(0, 1fr); }
+  .disk-bar-top .ex { display: none; }
+  .disk-title { flex-wrap: nowrap; align-items: flex-start; }
+  .disk-free { font-size: 34px; }
+  .disk-btn { flex: none; padding: 9px 14px; font-size: 13.5px; margin-top: 22px; }
+  .disk-free small { display: block; margin: 10px 0 0; }
+  .foot-bottom { flex-direction: column; align-items: center; }
+  .foot-bottom span + span::before { content: none; }
+  .bento-head { padding-block: 72px 28px; }
+  .bento { grid-template-columns: minmax(0, 1fr); }
+  .tile.wide { grid-column: auto; }
+  .tile { min-height: 0; }
+  .phones { gap: 10px; }
+  .phone { width: 84px; } .phone.tall { width: 96px; }
+  .phone:nth-child(4) { display: none; }
+}
+/* ---------- Motion ---------- */
+/* Hero: one load sequence. */
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.6) rotate(-8deg); } 70% { transform: scale(1.06) rotate(2deg); } 100% { opacity: 1; transform: none; } }
+@keyframes tilt-in { from { opacity: 0; transform: perspective(1400px) rotateX(22deg) translateY(80px) scale(.94); } to { opacity: 1; transform: perspective(1400px) rotateX(0) translateY(0) scale(1); } }
+@keyframes glow-pulse { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
+.hero-icon { animation: pop .9s cubic-bezier(.2,.9,.3,1.2) both; }
+.hero h1 { animation: rise .8s .15s cubic-bezier(.2,.8,.2,1) both; }
+.hero .lede { animation: rise .8s .3s cubic-bezier(.2,.8,.2,1) both; }
+.hero .ctas { animation: rise .8s .42s cubic-bezier(.2,.8,.2,1) both; }
+.hero .req { animation: rise .8s .52s cubic-bezier(.2,.8,.2,1) both; }
+.window { animation: tilt-in 1.3s .5s cubic-bezier(.16,.84,.24,1) both; transform-origin: 50% 100%; }
+.stage::before { animation: glow-pulse 6s ease-in-out infinite; }
+
+/* Scroll reveals: content is visible by default; only with JS running does it start hidden and slide in. */
+html.js .reveal { opacity: 0; transform: translateY(32px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
+html.js .reveal.from-left { transform: translateX(-48px); }
+html.js .reveal.from-right { transform: translateX(48px); }
+html.js .reveal.above { transform: translateY(-32px); }
+html.js .reveal.in { opacity: 1; transform: none; }
+/* On phones the columns stack, so side entrances would push past the screen edge: rise instead. */
+@media (max-width: 820px) { html.js .reveal.from-left, html.js .reveal.from-right { transform: translateY(32px); } html.js .reveal.in { transform: none; } }
+
+/* Pieces inside each visual animate in one after another. */
+html.js .stagger > * { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--i, 0) * 90ms + 250ms); }
+html.js .in .stagger > *, html.js .stagger.in > * { opacity: 1; transform: none; }
+html.js .phones > * { transform: translateY(60px); }
+html.js .bars i { transform: scaleY(0); transform-origin: bottom; transition: transform 1s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--i, 0) * 110ms + 300ms); }
+html.js .in .bars i { transform: none; }
+html.js .tree .meter i { transform: scaleX(0); transform-origin: left; transition: transform 1.1s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--i, 0) * 110ms + 400ms); }
+html.js .in .tree .meter i { transform: none; }
+
+/* Whole sections scale and fade in as they enter, and back out as they leave (both scroll directions). */
+html.js .sec { opacity: 0; transform: translateY(70px) scale(.95); transition: opacity 1s ease, transform 1.1s cubic-bezier(.16,.84,.24,1); will-change: transform, opacity; }
+html.js .sec.above { transform: translateY(-70px) scale(.95); }
+html.js .sec.on { opacity: 1; transform: none; }
+
+/* Hover */
+.dl { transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease; }
+.dl:hover { transform: translateY(-3px); box-shadow: 0 14px 34px -12px rgb(45 212 191 / .55); }
+.nav-dl, .link, .foot-links a, .nav-right a { transition: color .2s, border-color .2s, background .2s; }
+.nav-dl:hover { border-color: var(--brand); }
+.f-visual { transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease, border-color .5s; }
+.f-visual:hover .viz > * { transform: translateY(-4px); }
+.f-visual .viz > * { transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+.phone, .ext-row, .lock-row, .trash-win .item { transition: transform .3s ease, border-color .3s; }
+.phone:hover { transform: translateY(-6px); }
+.put-back { transition: background .2s, color .2s; cursor: default; }
+.trash-win .item:hover .put-back { background: var(--brand); color: #04221F; border-color: var(--brand); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before { animation: none !important; transition: none !important; }
+  html.js .reveal, html.js .sec, html.js .stagger > *, html.js .bars i, html.js .tree .meter i { opacity: 1 !important; transform: none !important; }
+}
+</style>
+
+<nav class="nav">
+      <a class="brand" href="#top"><img src="icon.png" alt="">DiskSweep</a>
+      <div class="nav-right">
+        <a href="#features">Features</a>
+        <a href="#safety">Safety</a>
+        <a class="nav-dl js-download" href="#download">Download</a>
+      </div>
+    </nav>
+<div class="banner bleed">
+  <div class="banner-inner gutter">
+
+    <div class="hero-block">
+    <header class="hero" id="top">
+      <img class="hero-icon" src="icon.png" alt="DiskSweep icon" width="132" height="132">
+      <h1>The Mac cleaner <span>made for developers.</span></h1>
+      <p class="lede">Find the space your dev tools quietly eat, and clean it safely.</p>
+      <div class="ctas">
+        <a class="dl js-download" href="#download">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.6 1.1 8.75.73 1.05 1.6 2.24 2.73 2.2 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.84-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.29-3.52zM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.65-1.05 1.68-.92 2.68.97.07 1.96-.49 2.56-1.23z"/></svg>
+          Download for Mac
+        </a>
+        <a class="link" href="#features">See how it works</a>
+      </div>
+      <p class="req">macOS 15 or later · Apple silicon</p>
+    </header>
+
+    <div class="stage">
+      <div class="window">
+        <div class="titlebar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>DiskSweep</span></div>
+        <div class="mini" aria-label="Interactive example of DiskSweep">
+          <aside class="m-side"><div class="m-cat on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13h18v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M5 13l2-7h10l2 7"/></svg><span>Overview</span><b>38.6 GB</b></div><div class="m-cat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg><span>Dependencies</span><b>7.4 GB</b></div><div class="m-cat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6l4 4-9 9H5v-4z"/><path d="M13 7l4 4"/></svg><span>Build Artifacts</span><b>1.9 GB</b></div><div class="m-cat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/></svg><span>Package Caches</span><b>8.3 GB</b></div><div class="m-cat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><span>iOS Simulators</span><b>15.9 GB</b></div><div class="m-cat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8l-5 4 5 4M16 8l5 4-5 4M14 4l-4 16"/></svg><span>Editors & IDEs</span><b>6.5 GB</b></div><div class="m-cat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg><span>App Caches</span><b>0.5 GB</b></div></aside>
+          <div class="m-main">
+            <div class="m-head"><b>Overview</b><span class="m-example">example data</span><span class="m-free"><em id="m-free">95.6 GB</em> free</span></div>
+            <div class="m-cols"><span></span><span>Name</span><span>Size</span><span class="m-act">Last activity</span><span>Status</span></div>
+            <ul class="m-rows" id="m-rows"></ul>
+            <div class="m-foot">
+              <span class="m-sel"><b id="m-count">0 selected</b> <span id="m-size">0 GB</span></span>
+              <span class="m-actions"><button class="m-reset" id="m-reset" type="button" hidden>Reset demo</button><button class="m-trash" id="m-trash" type="button">Move to Trash…</button></span>
+            </div>
+            <div class="m-toast" id="m-toast" role="status" aria-live="polite"></div>
+          </div>
+        </div>
+        <img class="m-fallback" src="hero.jpg" alt="DiskSweep showing VS Code extensions with sizes, last activity and labels like In use and Not used recently" width="2000" height="1090">
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<main class="sheet bleed gutter">
+<div class="feat-layer bleed gutter">
+<div class="wrap feat">
+  <div class="ex-head reveal sec" id="features">
+    <div class="ex-bg" aria-hidden="true"><span class="m" style="left:4%;top:8%;font-size:22px;opacity:0.16;filter:blur(0px);--d:0.0s">node_modules</span><span data-still style="left:18%;top:70%;font-size:18px;opacity:0.12;filter:blur(1px);--d:1.3s">.next</span><span class="m" style="right:8%;top:10%;font-size:20px;opacity:0.14;filter:blur(0px);--d:2.6s">DerivedData</span><span data-still style="right:2%;top:62%;font-size:17px;opacity:0.11;filter:blur(1px);--d:3.9s">target/</span><span style="left:8%;top:42%;font-size:15px;opacity:0.1;filter:blur(2px);--d:5.2s">~/.npm</span><span data-still class="m" style="right:18%;top:86%;font-size:16px;opacity:0.1;filter:blur(1px);--d:6.5s">__pycache__</span><span style="left:28%;top:4%;font-size:14px;opacity:0.09;filter:blur(2px);--d:7.8s">.venv</span><span data-still style="right:26%;top:2%;font-size:15px;opacity:0.09;filter:blur(2px);--d:9.1s">Pods/</span><span class="m" style="right:2%;top:36%;font-size:15px;opacity:0.1;filter:blur(2px);--d:10.4s">.gradle</span><span data-still class="m" style="left:2%;top:82%;font-size:15px;opacity:0.1;filter:blur(1px);--d:11.7s">iOS 17.5 runtime</span><span style="left:40%;top:92%;font-size:14px;opacity:0.08;filter:blur(2px);--d:13.0s">pnpm store</span><span data-still style="right:12%;top:48%;font-size:13px;opacity:0.08;filter:blur(3px);--d:14.3s">bin/ obj/</span></div>
+    <h2>Everything your dev tools leave behind.</h2>
+  </div>
+  <section class="f-row sec" style="--c:#A78BFA">
+    <div class="f-text reveal from-left"><h3>Old simulators</h3><p>Old simulators and runtimes are the biggest hidden space eater on a dev Mac. DiskSweep removes them the way Xcode does.</p></div>
+    <div class="f-visual reveal from-right"><div class="viz"><div class="phones stagger">
+        <div class="phone off"><span class="tag">Safe to delete</span><b>iPhone 14</b><span>iOS 17.5 · unavailable</span><span class="size">4.2 GB</span></div>
+        <div class="phone tall"><b>iOS 26.0 runtime</b><span>Xcode › Components</span><span class="size">8.0 GB</span></div>
+        <div class="phone"><b>iPhone 16 Pro</b><span>iOS 26.0</span><span class="size">7.9 GB</span></div>
+        <div class="phone"><b>iPad Air</b><span>iOS 26.0</span><span class="size">2.7 GB</span></div>
+      </div></div></div>
+  </section>
+  <section class="f-row sec" style="--c:#60A5FA">
+    <div class="f-text reveal from-right"><h3>Project leftovers</h3><p>node_modules, .next, target, .venv, DerivedData and more, in any language. A folder only counts when the project file next to it proves it.</p></div>
+    <div class="f-visual reveal from-left"><div class="viz"><div class="tree stagger">
+        <div class="row"><span>web-app/node_modules</span><em>2.5 GB</em><div class="meter"><i style="width:100%;background:#3B82F6"></i></div></div>
+        <div class="row"><span>web-app/.next</span><em>1.7 GB</em><div class="meter"><i style="width:68%;background:#84CC16"></i></div></div>
+        <div class="row"><span>api/target</span><em>1.2 GB</em><div class="meter"><i style="width:48%;background:#F97316"></i></div></div>
+        <div class="row"><span>ml/.venv</span><em>860 MB</em><div class="meter"><i style="width:34%;background:#EAB308"></i></div></div>
+        <div class="row"><span>ios/DerivedData</span><em>640 MB</em><div class="meter"><i style="width:26%;background:#A855F7"></i></div></div>
+      </div></div></div>
+  </section>
+  <section class="f-row sec" style="--c:#2DD4BF">
+    <div class="f-text reveal from-left"><h3>Package caches</h3><p>npm, pnpm, Homebrew, Gradle and Maven keep every download forever. They come back on their own when needed.</p></div>
+    <div class="f-visual reveal from-right"><div class="viz"><div class="bars stagger">
+        <div><b>6.0</b><i style="height:100%"></i><span>pnpm</span></div>
+        <div><b>4.1</b><i style="height:68%"></i><span>npm</span></div>
+        <div><b>3.2</b><i style="height:53%"></i><span>brew</span></div>
+        <div><b>2.3</b><i style="height:38%"></i><span>gradle</span></div>
+        <div><b>1.8</b><i style="height:30%"></i><span>maven</span></div>
+      </div></div></div>
+  </section>
+  <section class="f-row sec" style="--c:#F472B6">
+    <div class="f-text reveal from-right"><h3>Forgotten extensions</h3><p>DiskSweep reads VS Code, Cursor and JetBrains activity. What you used recently stays locked; the rest shows when you last opened it.</p></div>
+    <div class="f-visual reveal from-left"><div class="viz"><div class="editors-viz stagger">
+        <div class="apps">
+          <span class="app-ico" style="background:linear-gradient(160deg,#3B9BF5,#1A6FD1)">VS</span>
+          <span class="app-ico" style="background:linear-gradient(160deg,#3A3A3C,#111)">Cu</span>
+          <span class="app-ico" style="background:linear-gradient(160deg,#2DD4BF,#0F766E)">Ws</span>
+          <span class="app-ico" style="background:linear-gradient(160deg,#FB7185,#7C3AED)">JB</span>
+          <span class="app-ico" style="background:linear-gradient(160deg,#60A5FA,#2563EB)">Xc</span>
+        </div>
+        <div class="ext-row"><span>Live Share<br><small>last used 4 years ago</small></span><span class="pill unused">Not used recently</span></div>
+        <div class="ext-row"><span>Claude Code<br><small>used 19 hours ago</small></span><span class="pill lock">In use</span></div>
+      </div></div></div>
+  </section>
+  <section class="f-row sec" style="--c:#38BDF8" id="safety">
+    <div class="f-text reveal from-left"><h3>Trash first</h3><p>Files go to the Trash, so anything can be put back.</p></div>
+    <div class="f-visual reveal from-right"><div class="viz"><div class="trash-win stagger">
+        <div class="tb"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Trash</span></div>
+        <div class="item"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h4l2 2h7A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/></svg><div>node_modules<small>from ~/DEV/web-app</small></div><button class="put-back" type="button" tabindex="-1">Put Back</button></div>
+        <div class="item"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h4l2 2h7A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/></svg><div>.next<small>from ~/DEV/web-app</small></div><button class="put-back" type="button" tabindex="-1">Put Back</button></div>
+      </div></div></div>
+  </section>
+  <section class="f-row sec" style="--c:#FBBF24">
+    <div class="f-text reveal from-right"><h3>Running apps stay locked</h3><p>Caches of apps that are open can't be ticked, and DiskSweep checks again right before it deletes.</p></div>
+    <div class="f-visual reveal from-left"><div class="viz"><div class="lock-viz stagger">
+        <div class="lock-row on"><span class="cb"></span><span>Gradle caches<small>~/.gradle/caches</small></span><span class="pill safe">Safe</span></div>
+        <div class="lock-row dim"><span class="cb"></span><span>Slack caches<small>Slack is open</small></span><span class="pill lock">In use</span></div>
+        <div class="lock-row dim"><span class="cb"></span><span>Chrome caches<small>Chrome is open</small></span><span class="pill lock">In use</span></div>
+      </div></div></div>
+  </section>
+
+</div>
+</div>
+<div class="under bleed gutter">
+<div class="wrap">
+  <section class="sweep-sec" aria-label="Before and after">
+    <div class="sw-head">
+      <h2>One sweep. <span>101.4 GB back.</span></h2>
+      <p>On a typical 512 GB developer Mac, dev junk takes more space than all the apps combined. Here's the same Mac before and after.</p>
+    </div>
+    <div class="disk" id="disk">
+      <div class="disk-bar-top"><span class="dots"><i></i><i></i><i></i></span>Storage<span class="ex mono">Example: 512 GB developer Mac</span></div>
+      <div class="disk-body">
+        <div class="disk-title">
+          <div><b>Macintosh HD</b><div class="disk-free"><span id="disk-free">95.6</span> GB<small>free of 494.4 GB</small></div></div>
+          <button class="disk-btn" id="disk-btn" type="button">Sweep 101.4 GB</button>
+        </div>
+        <div class="disk-bar" id="disk-bar"><i style="--g:31.67;background:#8E8E93" title="macOS"></i><i style="--g:78.4;background:#AEAEB2" title="System Data"></i><i style="--g:96.2;background:#EF5350" title="Documents"></i><i style="--g:48.5;background:#F5A040" title="Applications"></i><i style="--g:22.3;background:#F2C94C" title="Developer"></i><i style="--g:12.4;background:#BF5AF2" title="Photos"></i><i style="--g:7.9;background:#5AA9E6" title="Other"></i><i class="j" style="--g:34.8;background:#F97316"></i><i class="j" style="--g:27.2;background:#FB923C"></i><i class="j" style="--g:21.6;background:#F43F5E"></i><i class="j" style="--g:17.8;background:#E11D48"></i><i class="fr" style="--g:95.6"></i></div>
+        <div class="disk-key"><span><i style="background:#8E8E93"></i>macOS</span><span><i style="background:#AEAEB2"></i>System Data</span><span><i style="background:#EF5350"></i>Documents</span><span><i style="background:#F5A040"></i>Applications</span><span><i style="background:#F2C94C"></i>Developer</span><span><i style="background:#BF5AF2"></i>Photos</span><span><i style="background:#5AA9E6"></i>Other</span><span><i style="background:#F97316"></i>Dev junk</span></div>
+        <div class="junk-list"><div class="junk-row"><span class="sw" style="background:#F97316"></span><span><b>node_modules &amp; builds</b><small>42 projects</small></span><span class="gb">34.8 GB</span></div><div class="junk-row"><span class="sw" style="background:#FB923C"></span><span><b>Xcode DerivedData</b><small>Rebuilt on next build</small></span><span class="gb">27.2 GB</span></div><div class="junk-row"><span class="sw" style="background:#F43F5E"></span><span><b>Old simulators</b><small>iOS 16, iOS 17 runtimes</small></span><span class="gb">21.6 GB</span></div><div class="junk-row"><span class="sw" style="background:#E11D48"></span><span><b>Caches &amp; logs</b><small>npm, Gradle, Chrome…</small></span><span class="gb">17.8 GB</span></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+</div>
+<div class="after">
+<div class="closing reveal sec">
+    <section class="final" id="download">
+      <a class="final-icon js-download" href="#download" aria-label="Download DiskSweep for Mac"><img src="icon.png" alt=""></a>
+      <h2>Your disk, back.</h2>
+      <p class="final-hint">Click the icon to download</p>
+      <p class="req">macOS 15 or later · Apple silicon</p>
+    </section>
+</div>
+<div class="wrap">
+    <footer class="foot">
+      <div class="foot-bottom">
+        <span>Made by a developer, for developers.</span>
+        <span>© 2026 DiskSweep</span>
+      </div>
+    </footer>
+</div>
+
+</div>
+</main>
+
+<script>
+document.documentElement.classList.add("js");
+(() => {
+  // Interactive mini DiskSweep in the hero (example data).
+  const sample = [
+    ["iOS 26.0 runtime", "iOS Simulators · Xcode › Components", 8.0, "2 days ago", "reinstall", "Will need reinstall", false],
+    ["WebStorm 2024.3 (old version)", "~/Library/Caches/JetBrains", 6.3, "8 months ago", "safe", "Safe to delete", true],
+    ["pnpm store v10", "~/Library/pnpm/store/v10", 4.1, "1 year ago", "safe", "Safe to delete", true],
+    ["DerivedData · Storefront", "~/Library/Developer/Xcode", 3.2, "3 weeks ago", "safe", "Safe to delete", true],
+    ["web-app/node_modules", "~/DEV/web-app", 2.5, "5 months ago", "reinstall", "Will need reinstall", false],
+    ["Gradle caches", "~/.gradle/caches", 2.3, "4 months ago", "safe", "Safe to delete", false],
+    ["web-app/.next", "~/DEV/web-app", 1.7, "5 months ago", "safe", "Safe to delete", true],
+    ["Live Share", "VS Code extension", 0.03, "4 years ago", "unused", "Not used recently", false],
+    ["Slack — app caches", "Slack is open", 0.46, "today", "inuse", "In use", false],
+  ];
+  const fmt = v => v >= 1 ? v.toFixed(1) + " GB" : Math.round(v * 1000) + " MB";
+  const rowsEl = document.getElementById("m-rows");
+  let items, freeNow, shownFree;
+  const freeEl = document.getElementById("m-free");
+  function renderMini() {
+    rowsEl.innerHTML = "";
+    items.forEach(it => {
+      if (it.gone) return;
+      const li = document.createElement("li");
+      li.className = "m-row" + (it.sel ? " sel" : "") + (it.status === "inuse" ? " locked" : "");
+      li.innerHTML = `<span class="m-check"></span><span class="m-name"><div>${it.name}</div><small>${it.path}</small></span>` +
+        `<span class="m-size">${fmt(it.size)}</span><span class="m-act">${it.when}</span><span class="m-st"><span class="m-status st-${it.status}">${it.label}</span></span>`;
+      li.setAttribute("role", "checkbox"); li.setAttribute("aria-checked", it.sel); li.tabIndex = it.status === "inuse" ? -1 : 0;
+      const toggle = () => { if (it.status === "inuse") return; it.sel = !it.sel; li.classList.toggle("sel", it.sel); li.setAttribute("aria-checked", it.sel); updateMini(); };
+      li.addEventListener("click", toggle);
+      li.addEventListener("keydown", e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(); } });
+      it.el = li;
+      rowsEl.appendChild(li);
+    });
+    updateMini();
+  }
+  function updateMini() {
+    const sel = items.filter(i => i.sel && !i.gone);
+    const total = sel.reduce((a, b) => a + b.size, 0);
+    document.getElementById("m-count").textContent = sel.length + " selected";
+    document.getElementById("m-size").textContent = fmt(total);
+    document.getElementById("m-trash").disabled = sel.length === 0;
+  }
+  function countFree(to) {
+    const from = shownFree, t0 = performance.now();
+    const step = t => {
+      const p = Math.min((t - t0) / 1000, 1), v = from + (to - from) * (1 - Math.pow(1 - p, 3));
+      freeEl.textContent = v.toFixed(1) + " GB";
+      if (p < 1) requestAnimationFrame(step); else shownFree = to;
+    };
+    requestAnimationFrame(step);
+  }
+  function resetMini() {
+    items = sample.map(([name, path, size, when, status, label, sel]) => ({ name, path, size, when, status, label, sel }));
+    freeNow = 95.6; shownFree = 95.6; freeEl.textContent = "95.6 GB";
+    document.getElementById("m-reset").hidden = true;
+    renderMini();
+  }
+  document.getElementById("m-trash").addEventListener("click", () => {
+    const sel = items.filter(i => i.sel && !i.gone);
+    if (!sel.length) return;
+    const total = sel.reduce((a, b) => a + b.size, 0);
+    sel.forEach((it, i) => setTimeout(() => it.el.classList.add("gone"), i * 70));
+    setTimeout(() => {
+      sel.forEach(it => { it.gone = true; it.sel = false; });
+      freeNow += total; countFree(freeNow); renderMini();
+      document.getElementById("m-reset").hidden = false;
+      const toast = document.getElementById("m-toast");
+      toast.textContent = `Moved ${sel.length} items to the Trash · ${fmt(total)} freed`;
+      toast.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => toast.classList.remove("show"), 2800);
+    }, sel.length * 70 + 450);
+  });
+  document.getElementById("m-reset").addEventListener("click", resetMini);
+  resetMini();
+
+  // Glass nav gets a hairline once the page scrolls.
+  const nav = document.querySelector(".nav");
+  // Each pinned block stays put once its bottom reaches the screen edge; the sheet after it slides over it,
+  // blurring, dimming and shrinking it slightly as it gets covered.
+  const layers = [[".banner", ".sheet"]].map(([a, b]) => [document.querySelector(a), document.querySelector(b)]).filter(([a, b]) => a && b);
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const pin = () => layers.forEach(([el]) => { el.style.top = Math.min(0, innerHeight - el.offsetHeight) + "px"; });
+  const cover = () => {
+    if (still) return;
+    layers.forEach(([el, over]) => {
+      const p = Math.min(Math.max((innerHeight - over.getBoundingClientRect().top) / innerHeight, 0), 1);
+      // Same curve and values as "One sweep" coming into focus, run the other way.
+      const b = Math.pow(p, 3);
+      el.style.transform = p ? `scale(${1 - b * 0.06})` : "";
+      el.style.filter = p ? `blur(${(b * 12).toFixed(1)}px) brightness(${1 - b * 0.45})` : "";
+      el.style.opacity = 1 - b * 0.5;
+    });
+  };
+  const under = document.querySelector(".under");
+  const pinUnder = () => { if (under) under.style.bottom = Math.min(0, innerHeight - under.offsetHeight) + "px"; };
+  pinUnder(); addEventListener("resize", pinUnder); addEventListener("load", pinUnder);
+  pin(); addEventListener("resize", pin); addEventListener("load", pin);
+  // "One sweep" underneath starts blurred, dim and slightly small, and comes into focus as the features layer
+  // scrolls off it.
+  const featLayer = document.querySelector(".feat-layer"), underInner = document.querySelector(".under > .wrap");
+  const focus = () => {
+    if (still || !featLayer || !underInner) return;
+    const q = 1 - Math.min(Math.max(featLayer.getBoundingClientRect().bottom / innerHeight, 0), 1);
+    // The exact inverse of the hero being covered: same scale, blur, brightness and opacity, run backwards.
+    // Blur fades out faster than linear so the revealed half already reads clearly at 50%.
+    const b = Math.pow(1 - q, 3);
+    underInner.style.transform = q < 1 ? `scale(${1 - b * 0.06})` : "";
+    underInner.style.filter = q < 1 ? `blur(${(b * 12).toFixed(1)}px) brightness(${1 - b * 0.45})` : "";
+    underInner.style.opacity = 1 - b * 0.5;
+    if (q > 0.9 && !focus.done) { focus.done = true; dispatchEvent(new Event("sweep-ready")); }
+  };
+  addEventListener("scroll", focus, { passive: true }); focus();
+  addEventListener("scroll", cover, { passive: true }); cover();
+  const onScroll = () => nav.classList.toggle("scrolled", scrollY > 8);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  // Scroll reveals: mark each element as it enters the viewport; number the pieces inside each visual.
+  document.querySelectorAll(".stagger").forEach(g => [...g.children].forEach((c, i) => {
+    c.style.setProperty("--i", i);
+    c.querySelectorAll(".meter i").forEach(m => m.style.setProperty("--i", i));
+    if (c.tagName === "DIV" && g.classList.contains("bars")) c.querySelector("i")?.style.setProperty("--i", i);
+  }));
+  const reveals = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    // Content and sections animate in when they enter and back out when they leave, in both directions.
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      e.target.classList.toggle("in", e.isIntersecting);
+      e.target.classList.toggle("above", !e.isIntersecting && e.boundingClientRect.top < 0);
+    }), { threshold: 0.15, rootMargin: "0px 0px -6% 0px" });
+    reveals.forEach(el => io.observe(el));
+    const secIo = new IntersectionObserver(entries => entries.forEach(e => {
+      e.target.classList.toggle("on", e.isIntersecting);
+      e.target.classList.toggle("above", !e.isIntersecting && e.boundingClientRect.top < 0);
+    }), { threshold: 0.12 });
+    document.querySelectorAll(".sec").forEach(el => secIo.observe(el));
+  } else {
+    reveals.forEach(el => el.classList.add("in"));
+    document.querySelectorAll(".sec").forEach(el => el.classList.add("on"));
+  }
+
+  // Where every "Download for Mac" button points. Set this to the real release URL (e.g. GitHub Releases).
+  const DOWNLOAD_URL = "";
+  if (DOWNLOAD_URL) document.querySelectorAll(".js-download").forEach(a => { a.href = DOWNLOAD_URL; });
+
+  // Storage demo: Sweep collapses the dev-junk segments one by one and counts the free space up. Plays once
+  // when it scrolls into view; the button then replays it.
+  const disk = document.getElementById("disk");
+  if (disk) {
+    const segs = [...disk.querySelectorAll(".disk-bar .j")], rows = [...disk.querySelectorAll(".junk-row")];
+    const fr = disk.querySelector(".fr"), out = document.getElementById("disk-free"), btn = document.getElementById("disk-btn");
+    const sizes = [34.8, 27.2, 21.6, 17.8], reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let free = 95.6, timers = [];
+    const count = (from, to) => {
+      if (reduce) { out.textContent = to.toFixed(1); return; }
+      const t0 = performance.now();
+      const tick = t => { const p = Math.min((t - t0) / 900, 1); out.textContent = (from + (to - from) * (1 - Math.pow(1 - p, 3))).toFixed(1); if (p < 1) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    };
+    const reset = () => {
+      timers.forEach(clearTimeout); timers = [];
+      segs.concat(rows).forEach(el => el.classList.remove("gone"));
+      free = 95.6; fr.style.setProperty("--g", free); out.textContent = free.toFixed(1);
+      disk.classList.remove("done"); btn.textContent = "Sweep 101.4 GB";
+    };
+    const sweep = () => {
+      btn.textContent = "Sweeping…";
+      sizes.forEach((gb, i) => timers.push(setTimeout(() => {
+        segs[i].classList.add("gone"); rows[i].classList.add("gone");
+        const from = free; free += gb; fr.style.setProperty("--g", free); count(from, free);
+        if (i === sizes.length - 1) timers.push(setTimeout(() => { out.textContent = "197.0"; disk.classList.add("done"); btn.textContent = "Replay"; }, 900));
+      }, reduce ? 0 : i * 650)));
+    };
+    btn.addEventListener("click", () => { if (disk.classList.contains("done")) { reset(); timers.push(setTimeout(sweep, 400)); } else if (!timers.length) sweep(); });
+    // Plays once "One sweep" is in focus (the layer above has scrolled off it); without the effect, when it's in view.
+    const autoplay = () => { if (!timers.length && !disk.classList.contains("done")) timers.push(setTimeout(sweep, 500)); };
+    if (!reduce) addEventListener("sweep-ready", autoplay, { once: true });
+    else if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); autoplay(); } }, { threshold: 0.6 });
+      io.observe(disk);
+    }
+  }
+})();
+</script>

@@ -1,0 +1,39 @@
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# App bundle and release files made by scripts/build-app.sh
+build/
+*.app
+*.dmg
+*.zip
+*.pkg
+
+# Xcode (when Package.swift is opened in Xcode)
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.dSYM
+*.dSYM.zip
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local Claude Code settings (machine-specific permissions)
+.claude/settings.local.json
+
+# Env and secrets
+.env
+.env.*
