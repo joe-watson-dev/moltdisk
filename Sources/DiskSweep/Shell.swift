@@ -38,11 +38,12 @@ enum Shell {
     }
 
     /// Asks git whether `name` is gitignored in `project`. Scanned projects may be untrusted clones, so git runs
-    /// without their hooks or fsmonitor, without system/global config, and without reading the index.
+    /// without their hooks or fsmonitor and without system/global config. The index is read on purpose: a folder
+    /// that holds tracked files then counts as not ignored, so it is never labelled safe.
     /// Exit status: 0 ignored, 1 not ignored, 128 not a git repo.
     static func gitCheckIgnore(project: URL, name: String) async -> Result {
         await run("/usr/bin/git", ["-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null",
-                                   "-C", project.path, "check-ignore", "--no-index", "-q", "--", name],
+                                   "-C", project.path, "check-ignore", "-q", "--", name],
                   environment: ["GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_TERMINAL_PROMPT": "0"])
     }
 
