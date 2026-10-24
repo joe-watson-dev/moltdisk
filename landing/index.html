@@ -343,7 +343,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
 .faq { padding-block: clamp(80px, 10vw, 140px) 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
 /* Left: a giant question mark is the backdrop for the title, and stays in view while the questions scroll. */
 .faq-head { position: sticky; top: 72px; isolation: isolate; display: grid; gap: 14px; align-content: center; min-height: clamp(340px, 36vw, 500px); padding-left: clamp(8px, 2vw, 24px); }
-.faq-head::before { content: "?"; position: absolute; z-index: -1; left: -0.08em; top: 50%; transform: translateY(-52%) rotate(-8deg);
+.faq-head::before { content: "?"; position: absolute; z-index: -1; left: 30%; top: 50%; transform: translateY(-52%) rotate(-8deg);
   /* Padding gives the gradient room to paint the glyph's curve, which reaches past its advance box. */
   padding: 0.08em 0.18em; font-size: clamp(340px, 42vw, 620px); font-weight: 800; line-height: 1; opacity: .4;
   background: linear-gradient(165deg, color-mix(in srgb, var(--brand) 55%, transparent) 10%, color-mix(in srgb, var(--brand) 16%, transparent) 85%);
