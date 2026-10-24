@@ -7,7 +7,8 @@
 <p align="center"><b>The Mac cleaner made for developers.</b><br>
 Find the space your dev tools quietly eat, and clean it safely.</p>
 
-<p align="center">macOS 15 or later · Apple silicon · native SwiftUI</p>
+<p align="center">macOS 15 or later · Apple silicon · native SwiftUI<br>
+<a href="https://disksweep.vercel.app">disksweep.vercel.app</a></p>
 
 ![DiskSweep showing VS Code extensions with sizes, last activity and labels like In use and Not used recently](marketing/screenshot-vscode-full.png)
 

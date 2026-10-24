@@ -26,4 +26,4 @@ Requirements: macOS 15 Sequoia or later, Apple silicon. Price: free, no subscrip
 - [Download the latest version (zip)](https://github.com/joe-watson-sbf/disk-sweep/releases/latest/download/DiskSweep.zip)
 - [Releases and changelog](https://github.com/joe-watson-sbf/disk-sweep/releases)
 - [Source code and README](https://github.com/joe-watson-sbf/disk-sweep)
-- [Website](https://joe-watson-sbf.github.io/disk-sweep/)
+- [Website](https://disksweep.vercel.app/)

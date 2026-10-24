@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://joe-watson-sbf.github.io/disk-sweep/sitemap.xml
+Sitemap: https://disksweep.vercel.app/sitemap.xml
