@@ -341,11 +341,12 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
    smoothly (native exclusive accordion via details name="faq"; each question is an h3 for the outline). */
 :root { interpolate-size: allow-keywords; }
 .faq { padding-block: clamp(80px, 10vw, 140px) 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
-/* Left: a giant question mark is the backdrop for the title, and stays in view while the questions scroll. */
-.faq-head { position: sticky; top: 72px; isolation: isolate; display: grid; gap: 14px; align-content: center; min-height: clamp(340px, 36vw, 500px); padding-left: clamp(8px, 2vw, 24px); }
-.faq-head::before { content: "?"; position: absolute; z-index: -1; left: 6%; top: 50%; transform: translateY(-52%) rotate(-8deg);
+/* Left: the title, then a big question mark below it (not behind the text); the column stays in view while the
+   questions scroll. */
+.faq-head { position: sticky; top: 72px; display: grid; gap: 14px; align-content: start; justify-items: start; }
+.faq-head::before { content: "?"; order: 1; display: block; margin-top: 8px; transform: rotate(-8deg); transform-origin: 30% 70%;
   /* Padding gives the gradient room to paint the glyph's curve, which reaches past its advance box. */
-  padding: 0.08em 0.18em; font-size: clamp(300px, 32vw, 470px); font-weight: 800; line-height: 1; opacity: .4;
+  padding: 0.04em 0.18em 0 0.06em; font-size: clamp(200px, 20vw, 300px); font-weight: 800; line-height: .9; opacity: .4;
   background: linear-gradient(165deg, color-mix(in srgb, var(--brand) 55%, transparent) 10%, color-mix(in srgb, var(--brand) 16%, transparent) 85%);
   -webkit-background-clip: text; background-clip: text; color: transparent; pointer-events: none; user-select: none; }
 .faq-list { width: 100%; }
@@ -379,8 +380,8 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
 @media (max-width: 820px) {
   .faq { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   /* The "?" floats behind on the right without adding height; the title sits left. */
-  .faq-head { position: relative; top: 0; min-height: 0; padding: 24px 0 16px; justify-items: start; text-align: left; }
-  .faq-head::before { left: auto; right: -0.12em; transform: translateY(-50%) rotate(-8deg); font-size: 340px; opacity: .45; }
+  .faq-head { position: relative; top: 0; isolation: isolate; padding: 24px 0 16px; justify-items: start; text-align: left; }
+  .faq-head::before { position: absolute; z-index: -1; top: 50%; left: auto; right: -0.12em; margin: 0; transform: translateY(-50%) rotate(-8deg); font-size: 340px; opacity: .45; }
   .faq summary { padding: 18px 0; } .faq summary h3 { font-size: 17px; }
   .faq details::before { left: -12px; }
   .faq details p { padding-right: 0; font-size: 15px; }
