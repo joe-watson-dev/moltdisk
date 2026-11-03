@@ -3,7 +3,7 @@ import Foundation
 /// Works out when each extension of a VS Code-family editor was last really used, from:
 /// - the editor's extension-host logs ("_doActivateExtension <id> … activationEvent: '<why>'"),
 /// - activity in the extension's globalStorage / workspaceStorage folders,
-/// - DiskSweep's own history of past activations (VS Code only keeps a few log sessions),
+/// - MoltDisk's own history of past activations (VS Code only keeps a few log sessions),
 /// - the install date and VS Code's list of disabled extensions.
 struct VSCodeUsage {
     struct Entry: Codable {
@@ -23,7 +23,7 @@ struct VSCodeUsage {
     static func historyFile(for editor: CodeEditor) -> URL {
         let name = editor.supportDir == "Code" ? "vscode" : editor.supportDir.lowercased().replacingOccurrences(of: " ", with: "-")
         return FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/DiskSweep/\(name)-usage.json")
+            .appendingPathComponent("Library/Application Support/MoltDisk/\(name)-usage.json")
     }
 
     private struct Saved: Codable {

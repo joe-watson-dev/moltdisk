@@ -13,18 +13,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 @main
 enum Entry {
+    /// The app used to be called DiskSweep: keep its saved extension-usage history.
+    static func migrateFromDiskSweep() {
+        let support = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support")
+        let old = support.appendingPathComponent("DiskSweep"), new = support.appendingPathComponent("MoltDisk")
+        let fm = FileManager.default
+        guard fm.fileExists(atPath: old.path), !fm.fileExists(atPath: new.path) else { return }
+        try? fm.moveItem(at: old, to: new)
+    }
+
     static func main() {
+        migrateFromDiskSweep()
         if CommandLine.arguments.contains("--check-guard") {
             Report.checkGuard()
         } else if CommandLine.arguments.contains("--report") {
             Report.run()
         } else {
-            DiskSweepApp.main()
+            MoltDiskApp.main()
         }
     }
 }
 
-/// `DiskSweep --report` prints the scan to the terminal without opening a window.
+/// `MoltDisk --report` prints the scan to the terminal without opening a window.
 enum Report {
     /// `--check-guard`: prints which sample paths SafetyGuard allows.
     static func checkGuard() {
@@ -55,6 +65,37 @@ enum Report {
             if allowed != expected { ok = false }
             print("\(allowed == expected ? "PASS" : "FAIL")  \(allowed ? "allow " : "refuse")  ~/\(rel)")
         }
+        // Uninstall rule: (bundle ID or developer prefix, app name, file under ~, bundle present?, expected).
+        let uninstall: [(String, String, String, Bool, Bool)] = [
+            ("com.foo.app", "Foo", "Library/Preferences/com.foo.app.plist", false, true),
+            ("com.foo.app", "Foo", "Library/Preferences/ByHost/com.foo.app.1234-ABCD.plist", false, true),
+            ("com.foo.app", "Foo", "Library/Containers/com.foo.app.ShareExtension", false, true),
+            ("com.foo.app", "Foo", "Library/Group Containers/ABCDE12345.com.foo.app", false, true),
+            ("com.foo.app", "Foo", "Library/Application Scripts/ABCDE12345.group.com.foo.app", false, true),
+            ("com.foo", "", "Library/Caches/com.foo.helper", false, true),
+            ("com.foo.app", "Foo", "Library/Preferences/com.foobar.plist", false, false),
+            ("com.foo.app", "Foo", "Library/Containers/com.foo.app/Data/Documents", false, false),
+            ("com.foo.app", "Foo", "Library/Application Support/Foo", false, false),
+            ("com.foo.app", "Foo", "Library/Keychains/com.foo.app", false, false),
+            ("com.foo.app", "Foo", "Documents/com.foo.app", false, false),
+            ("com.apple.mail", "Mail", "Library/Containers/com.apple.mail", false, false),
+            ("com.apple", "", "Library/Application Scripts/group.com.apple.Maps", false, false),
+            ("group.com", "", "Library/Application Scripts/group.com.apple.Maps", false, false),
+            ("developer.apple", "", "Library/HTTPStorages/developer.apple.wwdc-Release", false, false),
+            ("is.workflow", "", "Library/Application Scripts/group.is.workflow.shortcuts", false, false),
+            ("com.anthropic.claudefordesktop", "Claude", "Library/Application Support/Claude", false, false),
+        ]
+        for (id, name, rel, _, expected) in uninstall {
+            let file = URL(fileURLWithPath: SafetyGuard.home + "/" + rel)
+            let allowed = (try? SafetyGuard.validateUninstall(bundle: nil, bundleID: id, name: name, files: [file])) != nil
+            if allowed != expected { ok = false }
+            print("\(allowed == expected ? "PASS" : "FAIL")  \(allowed ? "allow " : "refuse")  uninstall \(id): ~/\(rel)")
+        }
+        // An app bundle outside an Applications folder is always refused.
+        let mailApp = (try? SafetyGuard.validateUninstall(bundle: URL(fileURLWithPath: "/System/Applications/Mail.app"),
+                                                          bundleID: "com.apple.mail", name: "Mail", files: [])) != nil
+        if mailApp { ok = false }
+        print("\(mailApp ? "FAIL" : "PASS")  \(mailApp ? "allow " : "refuse")  uninstall /System/Applications/Mail.app")
         print(ok ? "All guard checks passed" : "GUARD CHECK FAILED")
     }
 
@@ -86,12 +127,12 @@ enum Report {
     }
 }
 
-struct DiskSweepApp: App {
+struct MoltDiskApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @State private var store = Store()
 
     var body: some Scene {
-        WindowGroup("DiskSweep") {
+        WindowGroup("MoltDisk") {
             ContentView()
                 .environment(store)
                 .frame(minWidth: 960, minHeight: 600)

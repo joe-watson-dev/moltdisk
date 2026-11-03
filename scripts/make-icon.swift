@@ -1,4 +1,4 @@
-// Draws the DiskSweep app icon (a broom sweeping over a drive) and writes Resources/AppIcon.icns.
+// Draws the MoltDisk app icon (a drive shedding its old skin) and writes Resources/AppIcon.icns.
 // Usage: swift scripts/make-icon.swift
 import AppKit
 
@@ -41,53 +41,45 @@ func render(size: Int) -> NSBitmapImageRep {
     NSGradient(starting: hex(0x0B5F59), ending: hex(0x14B8A6))!.draw(in: body, angle: -90)
     cg.restoreGState()
 
-    // Drive.
-    hex(0x042F2E, 0.25).setFill()
-    NSBezierPath(roundedRect: NSRect(x: 20, y: 60, width: 60, height: 20), xRadius: 5, yRadius: 5).fill()
-    hex(0xCCFBF1).setFill()
-    NSBezierPath(roundedRect: NSRect(x: 20, y: 58, width: 60, height: 20), xRadius: 5, yRadius: 5).fill()
-    hex(0x5EEAD4).setFill()
-    NSBezierPath(roundedRect: NSRect(x: 26, y: 66, width: 22, height: 4), xRadius: 2, yRadius: 2).fill()
+    // The old skin: a pale outline of the drive, lifted up and to the left, peeling away.
+    let skin = NSRect(x: 13, y: 29, width: 60, height: 22)
+    cg.saveGState()
+    cg.translateBy(x: skin.midX, y: skin.midY)
+    cg.rotate(by: -0.12)
+    cg.translateBy(x: -skin.midX, y: -skin.midY)
+    let skinPath = NSBezierPath(roundedRect: skin, xRadius: 6, yRadius: 6)
+    hex(0xCCFBF1, 0.14).setFill()
+    skinPath.fill()
+    skinPath.lineWidth = 2.4
+    let dash: [CGFloat] = [5, 3.2]
+    skinPath.setLineDash(dash, count: 2, phase: 0)
+    hex(0xCCFBF1, 0.75).setStroke()
+    skinPath.stroke()
+    // Curled corner where the skin comes off.
+    let curl = NSBezierPath()
+    curl.move(to: NSPoint(x: skin.maxX - 15, y: skin.maxY))
+    curl.curve(to: NSPoint(x: skin.maxX, y: skin.maxY - 13),
+               controlPoint1: NSPoint(x: skin.maxX - 4, y: skin.maxY + 1), controlPoint2: NSPoint(x: skin.maxX + 1, y: skin.maxY - 4))
+    curl.line(to: NSPoint(x: skin.maxX - 9, y: skin.maxY - 7))
+    curl.close()
+    hex(0x99F6E4, 0.9).setFill()
+    curl.fill()
+    cg.restoreGState()
+
+    // The fresh drive underneath, bright and new.
+    hex(0x042F2E, 0.3).setFill()
+    NSBezierPath(roundedRect: NSRect(x: 24, y: 55, width: 60, height: 22), xRadius: 6, yRadius: 6).fill()
+    let drive = NSBezierPath(roundedRect: NSRect(x: 24, y: 52.5, width: 60, height: 22), xRadius: 6, yRadius: 6)
+    cg.saveGState()
+    drive.addClip()
+    NSGradient(starting: hex(0xF0FDFA), ending: hex(0xCCFBF1))!.draw(in: drive, angle: -90)
+    cg.restoreGState()
+    hex(0x2DD4BF).setFill()
+    NSBezierPath(roundedRect: NSRect(x: 31, y: 61.5, width: 24, height: 4.5), xRadius: 2.25, yRadius: 2.25).fill()
     hex(0x0F766E).setFill()
-    NSBezierPath(ovalIn: NSRect(x: 67, y: 65, width: 6, height: 6)).fill()
+    NSBezierPath(ovalIn: NSRect(x: 70.5, y: 60.5, width: 6.5, height: 6.5)).fill()
 
-    // Broom handle.
-    let handle = NSBezierPath()
-    handle.move(to: NSPoint(x: 67, y: 15))
-    handle.line(to: NSPoint(x: 47, y: 45))
-    handle.lineWidth = 5
-    handle.lineCapStyle = .round
-    hex(0xFDE68A).setStroke()
-    handle.stroke()
-    // Binding where the handle meets the bristles.
-    let band = NSBezierPath()
-    band.move(to: NSPoint(x: 40.5, y: 41.5))
-    band.line(to: NSPoint(x: 52.5, y: 47.5))
-    band.lineWidth = 4
-    band.lineCapStyle = .round
-    hex(0xB45309).setStroke()
-    band.stroke()
-
-    // Bristles.
-    let bristles = NSBezierPath()
-    bristles.move(to: NSPoint(x: 39, y: 43))
-    bristles.line(to: NSPoint(x: 53, y: 50))
-    bristles.line(to: NSPoint(x: 46, y: 61))
-    bristles.line(to: NSPoint(x: 27, y: 54))
-    bristles.close()
-    hex(0xFBBF24).setFill()
-    bristles.fill()
-    hex(0xD97706).setStroke()
-    for t in stride(from: 0.2, through: 0.8, by: 0.2) {
-        let line = NSBezierPath()
-        line.move(to: NSPoint(x: 39 + (53 - 39) * t, y: 43 + (50 - 43) * t))
-        line.line(to: NSPoint(x: 27 + (46 - 27) * t, y: 54 + (61 - 54) * t))
-        line.lineWidth = 1.1
-        line.lineCapStyle = .round
-        line.stroke()
-    }
-
-    // Sparkles: what's been swept clean.
+    // Two small sparkles: what's new and clean.
     func star(_ cx: CGFloat, _ cy: CGFloat, _ r: CGFloat) {
         let p = NSBezierPath()
         p.move(to: NSPoint(x: cx, y: cy - r))
@@ -98,9 +90,8 @@ func render(size: Int) -> NSBitmapImageRep {
         p.fill()
     }
     hex(0xF0FDFA).setFill()
-    star(24, 30, 6)
-    star(34, 19, 3.5)
-    star(80, 40, 3)
+    star(80, 30, 5.5)
+    star(71, 20, 3)
 
     NSGraphicsContext.restoreGraphicsState()
     return rep

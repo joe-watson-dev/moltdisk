@@ -11,6 +11,7 @@ enum Category: String, CaseIterable, Identifiable, Sendable {
     case logs = "Logs"
     case downloads = "Large Downloads"
     case trash = "Trash"
+    case apps = "Applications"
 
     var id: String { rawValue }
 
@@ -26,6 +27,7 @@ enum Category: String, CaseIterable, Identifiable, Sendable {
         case .logs: "doc.text"
         case .downloads: "arrow.down.circle"
         case .trash: "trash"
+        case .apps: "square.grid.2x2"
         }
     }
 
@@ -41,6 +43,7 @@ enum Category: String, CaseIterable, Identifiable, Sendable {
         case .logs: "Log files in ~/Library/Logs."
         case .downloads: "Items over 100 MB in your Downloads folder."
         case .trash: "Items already in the Trash. Emptying it is permanent."
+        case .apps: "Uninstall apps completely: the app plus the settings, caches and data it keeps in your Library. Leftovers lists what already-deleted apps left behind."
         }
     }
 }
@@ -83,6 +86,8 @@ enum ItemKind: Hashable, Sendable {
     case simDevice(udid: String)
     case simRuntime(id: String)
     case emptyTrash(URL)
+    /// An app and every file it keeps in ~/Library. `bundle` is nil for leftovers of an app that's already gone.
+    case app(bundle: URL?, bundleID: String, name: String, files: [URL])
 
     var id: String {
         switch self {
@@ -91,6 +96,7 @@ enum ItemKind: Hashable, Sendable {
         case .simDevice(let udid): "sim-device:\(udid)"
         case .simRuntime(let id): "sim-runtime:\(id)"
         case .emptyTrash(let url): "trash:\(url.path)"
+        case .app(let bundle, let bundleID, _, _): (bundle == nil ? "leftovers:" : "app:") + bundleID
         }
     }
 
@@ -102,6 +108,7 @@ enum ItemKind: Hashable, Sendable {
         switch self {
         case .path(let url), .emptyTrash(let url): [url]
         case .group(let urls): urls
+        case .app(let bundle, _, _, let files): (bundle.map { [$0] } ?? []) + files
         default: []
         }
     }
@@ -158,6 +165,10 @@ enum SidebarEntry: Hashable {
         switch self {
         case .overview: nil
         case .category(let c): c.blurb
+        case .group(.apps, let name):
+            name == AppScanner.installedGroup
+                ? "Apps on this Mac with everything they keep in your Library. Uninstalling moves the app and its files to the Trash; running apps are locked."
+                : "Files left in your Library by apps that are no longer on this Mac. Check the names before removing them."
         case .group(_, let name):
             CodeEditor.all.contains { $0.name == name }
                 ? "Every \(name) extension with when you last used it. Recently used ones are locked; old copies and caches are safe."
@@ -167,7 +178,8 @@ enum SidebarEntry: Hashable {
 
     func contains(_ item: CleanItem) -> Bool {
         switch self {
-        case .overview: true
+        // Uninstalling is its own decision, and app files overlap App Caches, so Overview leaves apps out.
+        case .overview: item.category != .apps
         case .category(let c): item.category == c
         case .group(let c, let name): item.category == c && item.group == name
         }

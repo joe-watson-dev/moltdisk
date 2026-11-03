@@ -24,6 +24,7 @@ struct Scanner: Sendable {
             Job(categories: [.logs]) { await scanFolderChildren(of: "Library/Logs", category: .logs) },
             Job(categories: [.downloads]) { await scanDownloads() },
             Job(categories: [.trash]) { await scanTrash() },
+            Job(categories: [.apps]) { await scanApplications() },
         ]
     }
 
@@ -67,7 +68,13 @@ struct Scanner: Sendable {
             var item = original
             if item.size == 0 { item.size = item.kind.paths.reduce(0) { $0 + (sizes[$1] ?? 0) } }
             guard item.size >= minSize else { return nil }
-            if case .emptyTrash = item.kind {} else if !item.kind.paths.allSatisfy(SafetyGuard.isAllowed) { return nil }
+            switch item.kind {
+            case .emptyTrash: break
+            case .app(let bundle, let bundleID, let name, let files):
+                guard (try? SafetyGuard.validateUninstall(bundle: bundle, bundleID: bundleID, name: name, files: files)) != nil else { return nil }
+            default:
+                if !item.kind.paths.allSatisfy(SafetyGuard.isAllowed) { return nil }
+            }
             if item.blockedReason == nil {
                 item.blockedReason = running.blockedReason(owner: item.owner, process: item.ownerProcess)
             }

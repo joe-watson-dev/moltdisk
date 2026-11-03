@@ -18,7 +18,8 @@ struct ContentView: View {
                                    scanning: store.scanning.contains(c))
                             .tag(SidebarEntry.category(c))
                         ForEach(store.groups(in: c), id: \.self) { name in
-                            SidebarRow(title: name, symbol: "app.badge", size: store.total(.group(c, name)), scanning: false)
+                            SidebarRow(title: name, symbol: c == .apps ? (name == AppScanner.installedGroup ? "app" : "puzzlepiece.extension") : "app.badge",
+                                       size: store.total(.group(c, name)), scanning: false)
                                 .padding(.leading, 22)
                                 .tag(SidebarEntry.group(c, name))
                         }
@@ -58,9 +59,10 @@ struct ContentView: View {
         }
         .sheet(isPresented: $store.showConfirm) { ConfirmSheet() }
         .onAppear {
-            // Self-test hook: open on a category or editor, e.g. DISKSWEEP_SIDEBAR="VS Code".
-            if let name = ProcessInfo.processInfo.environment["DISKSWEEP_SIDEBAR"] {
-                store.view = Category(rawValue: name).map { .category($0) } ?? .group(.editors, name)
+            // Self-test hook: open on a category or editor, e.g. MOLTDISK_SIDEBAR="VS Code".
+            if let name = ProcessInfo.processInfo.environment["MOLTDISK_SIDEBAR"] {
+                store.view = Category(rawValue: name).map { .category($0) }
+                    ?? ([AppScanner.installedGroup, AppScanner.leftoversGroup].contains(name) ? .group(.apps, name) : .group(.editors, name))
             }
         }
     }
@@ -184,13 +186,20 @@ struct ItemsView: View {
             }
             .width(22)
             TableColumn("Name", value: \.title) { item in
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.title).lineLimit(1)
-                    Text(item.detail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
+                HStack(spacing: 8) {
+                    if case .app(let bundle?, _, _, _) = item.kind {
+                        Image(nsImage: NSWorkspace.shared.icon(forFile: bundle.path))
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(item.title).lineLimit(1)
+                        Text(item.detail)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
                 }
                 .help(item.note ?? item.detail)
             }
@@ -313,6 +322,8 @@ struct ConfirmSheet: View {
         let reinstall = items.filter { $0.safety == .reinstall }.count
         let review = items.filter { $0.safety == .review }.count
         let simItems = items.filter { $0.kind.paths.isEmpty || $0.category == .trash }.count
+        let apps = items.filter { if case .app(_?, _, _, _) = $0.kind { true } else { false } }.count
+        let leftovers = items.filter { if case .app(nil, _, _, _) = $0.kind { true } else { false } }.count
         return VStack(alignment: .leading, spacing: 14) {
             let source = store.view == .overview ? "" : " from \(store.view.title)"
             Text(store.deletePermanently ? "Permanently delete \(items.count) items\(source)?" : "Move \(items.count) items\(source) to the Trash?")
@@ -327,6 +338,10 @@ struct ConfirmSheet: View {
                 if simItems > 0 {
                     warning("Simulators, runtimes and the Trash are removed with simctl or emptied directly — they never go to the Trash.", .orange)
                 }
+                if apps > 0 {
+                    warning("\(apps) app\(apps == 1 ? "" : "s") will be uninstalled with \(apps == 1 ? "its" : "their") settings and data. macOS may ask for your password for apps installed by an admin.", .orange)
+                }
+                if leftovers > 0 { warning("\(leftovers) leftover set\(leftovers == 1 ? "" : "s") from deleted apps will be removed.", .orange) }
                 if reinstall > 0 { warning("\(reinstall) items will need a reinstall or re-download.", .orange) }
                 if review > 0 { warning("\(review) items are marked Review first.", .red) }
             }

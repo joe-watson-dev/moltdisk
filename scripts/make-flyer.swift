@@ -1,4 +1,4 @@
-// Announcement flyer: marketing/disksweep-flyer.png (1080×1350 pt, rendered @2x).
+// Announcement flyer: marketing/moltdisk-flyer.png (1080×1350 pt, rendered @2x).
 // The storage card uses the example figures below; edit them, then: swift scripts/make-flyer.swift
 //
 // Product-marketing layout: glossy icon hero → two-tone headline → benefit line → the app on a scene
@@ -22,7 +22,7 @@ let categories: [(name: String, gb: Double, color: UInt32)] = [
     ("Trash", 1.20, 0x4CAF50),
 ]
 let freeSpace = diskSize - categories.reduce(0) { $0 + $1.gb }
-/// Part of the free space that DiskSweep recovered — the number the card leads with.
+/// Part of the free space that MoltDisk recovered — the number the card leads with.
 let freedByApp = 101.40
 let freeText = String(format: "%.2f GB", freeSpace)
 let freedText = String(format: "%.1f GB", freedByApp)
@@ -141,7 +141,7 @@ let canvas = NSImage(size: NSSize(width: W, height: H), flipped: true) { _ in
         hex(UInt32(color)).setFill()
         NSBezierPath(ovalIn: NSRect(x: window.minX + 16 + CGFloat(i) * 20, y: window.minY + 9, width: 12, height: 12)).fill()
     }
-    let title = text("DiskSweep", font(13, .semibold), hex(0xD1D5DB))
+    let title = text("MoltDisk", font(13, .semibold), hex(0xD1D5DB))
     title.draw(at: NSPoint(x: window.midX - title.size().width / 2, y: window.minY + 7))
     shot.draw(in: NSRect(x: window.minX, y: window.minY + titleBar, width: window.width, height: contentHeight),
               from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
@@ -173,10 +173,10 @@ let canvas = NSImage(size: NSSize(width: W, height: H), flipped: true) { _ in
     let inner = storage.insetBy(dx: 36, dy: 30)
     text(cardTitle, font(22, .bold), ink).draw(at: NSPoint(x: inner.minX, y: inner.minY))
     let free = NSMutableAttributedString(attributedString: text(freedText, font(26, .heavy, rounded: true), brand))
-    free.append(text(" freed by DiskSweep", font(18, .semibold), muted))
+    free.append(text(" freed by MoltDisk", font(18, .semibold), muted))
     free.draw(at: NSPoint(x: inner.maxX - free.size().width, y: inner.minY + 1))
 
-    let segments = categories + [("Freed by DiskSweep", freedByApp, 0x0D9488), ("Free", freeSpace - freedByApp, 0x99F6E4)]
+    let segments = categories + [("Freed by MoltDisk", freedByApp, 0x0D9488), ("Free", freeSpace - freedByApp, 0x99F6E4)]
     let bar = NSRect(x: inner.minX, y: inner.minY + 44, width: inner.width, height: 22)
     NSGraphicsContext.saveGraphicsState()
     NSBezierPath(roundedRect: bar, xRadius: 11, yRadius: 11).addClip()
@@ -225,6 +225,6 @@ NSGraphicsContext.saveGraphicsState()
 NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
 canvas.draw(in: NSRect(x: 0, y: 0, width: W, height: H))
 NSGraphicsContext.restoreGraphicsState()
-let out = marketing.appendingPathComponent("disksweep-flyer.png")
+let out = marketing.appendingPathComponent("moltdisk-flyer.png")
 try! rep.representation(using: .png, properties: [:])!.write(to: out)
 print("Wrote \(out.path)")

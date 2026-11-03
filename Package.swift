@@ -2,10 +2,10 @@
 import PackageDescription
 
 let package = Package(
-    name: "DiskSweep",
+    name: "MoltDisk",
     platforms: [.macOS(.v15)],
     targets: [
-        .executableTarget(name: "DiskSweep", path: "Sources/DiskSweep")
+        .executableTarget(name: "MoltDisk", path: "Sources/MoltDisk")
     ],
     swiftLanguageModes: [.v5]
 )

@@ -10,7 +10,7 @@ struct SettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Project folders").font(.headline)
-            Text("DiskSweep looks inside these folders, at any depth, for node_modules, virtualenvs, build output and other project artifacts.")
+            Text("MoltDisk looks inside these folders, at any depth, for node_modules, virtualenvs, build output and other project artifacts.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -34,7 +34,7 @@ struct SettingsView: View {
             }
             Divider().padding(.vertical, 4)
             Toggle("Include sandboxed app caches (~/Library/Containers)", isOn: $includeContainers)
-            Text("Covers App Store apps such as WhatsApp or Telegram. macOS will ask once whether DiskSweep may access other apps' data.")
+            Text("Covers App Store apps such as WhatsApp or Telegram. macOS will ask once whether MoltDisk may access other apps' data.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

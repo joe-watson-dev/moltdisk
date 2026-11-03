@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://disksweep.vercel.app/sitemap.xml
+Sitemap: https://moltdisk.vercel.app/sitemap.xml

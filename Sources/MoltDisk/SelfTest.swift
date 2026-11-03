@@ -1,15 +1,15 @@
 import AppKit
 
 /// Opt-in end-to-end check, driven through the same Store calls the buttons use:
-///   DISKSWEEP_SELFTEST=/path/to/item (or an item title) DISKSWEEP_SNAPSHOTS=/some/dir DiskSweep
+///   MOLTDISK_SELFTEST=/path/to/item (or an item title) MOLTDISK_SNAPSHOTS=/some/dir MoltDisk
 /// Scans, checks only that item, opens the confirmation sheet, moves it to the Trash,
 /// saves a PNG of the window at each step, prints the outcome and quits.
 @MainActor
 enum SelfTest {
     static func runIfRequested(_ store: Store) {
         let env = ProcessInfo.processInfo.environment
-        guard let target = env["DISKSWEEP_SELFTEST"] else { return }
-        let shots = URL(fileURLWithPath: env["DISKSWEEP_SNAPSHOTS"] ?? NSTemporaryDirectory())
+        guard let target = env["MOLTDISK_SELFTEST"] else { return }
+        let shots = URL(fileURLWithPath: env["MOLTDISK_SNAPSHOTS"] ?? NSTemporaryDirectory())
         Task {
             try? await Task.sleep(for: .seconds(1))
             NSApp.windows.first { $0.isVisible }?.setContentSize(NSSize(width: 1440, height: 900))

@@ -1,43 +1,43 @@
 <p align="center">
-  <img src="Resources/AppIcon-1024.png" width="128" alt="DiskSweep icon">
+  <img src="Resources/AppIcon-1024.png" width="128" alt="MoltDisk icon">
 </p>
 
-<h1 align="center">DiskSweep</h1>
+<h1 align="center">MoltDisk</h1>
 
 <p align="center"><b>The Mac cleaner made for developers.</b><br>
 Find the space your dev tools quietly eat, and clean it safely.</p>
 
 <p align="center">macOS 15 or later · Apple silicon · native SwiftUI<br>
-<a href="https://disksweep.vercel.app">disksweep.vercel.app</a></p>
+<a href="https://moltdisk.vercel.app">moltdisk.vercel.app</a></p>
 
-![DiskSweep showing VS Code extensions with sizes, last activity and labels like In use and Not used recently](marketing/screenshot-vscode-full.png)
+![MoltDisk showing VS Code extensions with sizes, last activity and labels like In use and Not used recently](marketing/screenshot-vscode-full.png)
 
-DiskSweep scans a developer Mac for reclaimable space (`node_modules` and build folders in any language, package caches, Xcode data, old simulators, unused editor extensions, app caches, logs) and groups it by category with sizes and a safety label on every item. It deletes only what you tick, after a confirmation sheet showing the total, and moves things to the Trash by default.
+MoltDisk scans a developer Mac for reclaimable space (`node_modules` and build folders in any language, package caches, Xcode data, old simulators, unused editor extensions, app caches, logs) and groups it by category with sizes and a safety label on every item. It deletes only what you tick, after a confirmation sheet showing the total, and moves things to the Trash by default.
 
 ## Highlights
 
 - **Every project, every language.** JS, Python, Java/Spring, Rust, .NET, Swift, Flutter, Elixir and more. Generic names like `build` or `dist` only count when the project file next to them proves it.
 - **Old simulators and runtimes**, removed with `xcrun simctl`, the way Xcode does it.
 - **Editor extensions by real use.** VS Code, Cursor, Windsurf, Antigravity, Kiro and other VS Code-based editors, plus JetBrains IDEs. Extensions you used recently are locked.
-- **Running apps stay locked.** Caches of open apps can't be ticked, and DiskSweep checks again right before it deletes.
+- **Running apps stay locked.** Caches of open apps can't be ticked, and MoltDisk checks again right before it deletes.
 - **Trash first.** Permanent delete is an explicit checkbox.
 
 ## Install
 
-Download `DiskSweep.zip` from [Releases](https://github.com/joe-watson-sbf/disk-sweep/releases), unzip it and move `DiskSweep.app` to Applications.
+Download `MoltDisk.zip` from [Releases](https://github.com/joe-watson-sbf/molt-disk/releases), unzip it and move `MoltDisk.app` to Applications.
 
 The app is ad-hoc signed, not notarized, so the first time macOS will block it: open **System Settings › Privacy & Security** and click **Open Anyway**. To read the Trash and some caches, grant **Full Disk Access** in System Settings › Privacy & Security.
 
 ## Build from source
 
 ```bash
-./scripts/build-app.sh          # builds build/DiskSweep.app (release, ad-hoc signed)
-open build/DiskSweep.app
+./scripts/build-app.sh          # builds build/MoltDisk.app (release, ad-hoc signed)
+open build/MoltDisk.app
 ```
 
-Or open `Package.swift` in Xcode and press Run. `swift run DiskSweep` works too.
+Or open `Package.swift` in Xcode and press Run. `swift run MoltDisk` works too.
 
-`swift run DiskSweep --report` prints the scan to the terminal without opening a window.
+`swift run MoltDisk --report` prints the scan to the terminal without opening a window.
 
 The app icon (a broom sweeping a drive) is drawn in code by `scripts/make-icon.swift`, which writes `Resources/AppIcon.icns`; `build-app.sh` bundles it. Rerun the script after tweaking colors or shapes.
 
@@ -55,12 +55,13 @@ The app icon (a broom sweeping a drive) is drawn in code by `scripts/make-icon.s
 | Logs | `~/Library/Logs/*` | Safe |
 | Large downloads | items over 100 MB in `~/Downloads` | Review |
 | Trash | `~/.Trash` (needs Full Disk Access to read) | Review |
+| Applications | **Installed:** every app in `/Applications` (and one folder deep) and `~/Applications`, with the files it keeps in `~/Library`: Application Support, Caches, Logs, Containers, Group Containers, Preferences (incl. ByHost), Saved Application State, HTTPStorages, WebKit, Cookies, Application Scripts and LaunchAgents. **Leftovers:** the same kinds of files from apps that are no longer on the Mac, one row per developer | Will need reinstall / Not used recently (90 days) / Review (leftovers) |
 
 Projects are searched in `~/DEV`, `~/Developer`, `~/Projects`, `~/code`… by default; change them in **Settings › Project folders** (⌘,).
 
 ### How extension usage is detected (VS Code, Cursor, Windsurf, Antigravity…)
 
-- **Activations:** VS Code's extension-host logs record each extension it activates and why. DiskSweep saves them per editor in `~/Library/Application Support/DiskSweep/` (e.g. `vscode-usage.json`, `cursor-usage.json`), so the history keeps growing after VS Code rotates its logs.
+- **Activations:** VS Code's extension-host logs record each extension it activates and why. MoltDisk saves them per editor in `~/Library/Application Support/MoltDisk/` (e.g. `vscode-usage.json`, `cursor-usage.json`), so the history keeps growing after VS Code rotates its logs.
 - **Storage:** activity in each extension's `globalStorage` and `workspaceStorage` folders also counts as use.
 - **Locked:** extensions used in the last 30 days, installed in the last 14 days, needed by an extension you use, or providing your active color/icon theme.
 - **Review first:** extensions that load at every VS Code startup (so real use can't be told apart), and snippet/grammar/theme-only extensions (VS Code never logs those).
@@ -75,7 +76,9 @@ Cleaning only acts on items ticked **in the section you're viewing**. Ticks you 
 - **Trash by default.** Items are moved to the Trash; "Delete permanently" is an explicit checkbox.
 - **Simulators** are removed with `xcrun simctl delete` / `simctl runtime delete`, never `rm`.
 - **Running apps are locked.** Caches, logs and data whose owner app is running (matched by bundle ID or name) show as *In use* and can't be selected. This is checked again just before deleting. Booted simulators and the live pnpm store are locked too.
-- **Hard guard (`SafetyGuard`).** Every path is checked right before deletion: it must be inside your home folder and at least two levels deep. `~/Library/Application Support` (Claude always), Containers, Group Containers, iCloud Drive, Keychains, Preferences, Documents, Desktop, Pictures, `.ssh` and `.config` are refused. The only exceptions are Chromium/Electron cache folders (`Cache`, `Code Cache`, `GPUCache`, `Service Worker/CacheStorage`…) and a sandboxed app's `Data/Library/Caches`. `DiskSweep --check-guard` prints the guard's decisions for sample paths.
+- **Uninstalling apps** has its own, stricter rule. The app must sit in an Applications folder and its Info.plist must carry the expected bundle ID. Every other file must be directly inside one of the Library folders above and named after that bundle ID (exactly, or with a `.` suffix such as `.plist`, a developer Team ID in front, or a `group.` prefix), or, in Application Support/Caches/Logs, exactly after the app's name. Apple's apps and identifiers in any form (`com.apple…`, `group.com.apple…`, `developer.apple…`), system tools, MoltDisk itself and Claude's data are always refused. The app goes to the Trash first (through the Finder, which asks for a password when an admin installed it); if a file can't be moved, the rest still is and the result says what is left. Other apps' Containers need **Full Disk Access**. Uninstalling isn't part of Overview, so "select all" there never removes an app.
+- **Leftovers** only count when no app from the same developer is on the Mac (checked against every app Spotlight knows, helpers included) and the name is a real reverse-DNS identifier, so log files like `warp.log.old.0` are ignored.
+- **Hard guard (`SafetyGuard`).** Every path is checked right before deletion: it must be inside your home folder and at least two levels deep. `~/Library/Application Support` (Claude always), Containers, Group Containers, iCloud Drive, Keychains, Preferences, Documents, Desktop, Pictures, `.ssh` and `.config` are refused. The only exceptions are Chromium/Electron cache folders (`Cache`, `Code Cache`, `GPUCache`, `Service Worker/CacheStorage`…) and a sandboxed app's `Data/Library/Caches`. `MoltDisk --check-guard` prints the guard's decisions for sample paths.
 
 ## Not covered
 
@@ -85,7 +88,7 @@ Cleaning only acts on items ticked **in the section you're viewing**. Ticks you 
 ## Self-test
 
 ```bash
-DISKSWEEP_SELFTEST=/path/to/some/node_modules DISKSWEEP_SNAPSHOTS=/tmp/shots build/DiskSweep.app/Contents/MacOS/DiskSweep
+MOLTDISK_SELFTEST=/path/to/some/node_modules MOLTDISK_SNAPSHOTS=/tmp/shots build/MoltDisk.app/Contents/MacOS/MoltDisk
 ```
 
 This scans, ticks only that item, opens the confirmation sheet, moves the item to the Trash through the same `Store.clean()` call the button uses, saves a PNG of the window at each step and quits.
@@ -94,7 +97,7 @@ This scans, ticks only that item, opens the confirmation sheet, moves the item t
 
 | Path | What |
 |---|---|
-| `Sources/DiskSweep/` | The app: scanners, safety guard, cleaner, SwiftUI views |
+| `Sources/MoltDisk/` | The app: scanners, safety guard, cleaner, SwiftUI views |
 | `Resources/` | App icon |
 | `scripts/` | App build script, icon and marketing image generators |
 | `landing/` | Product landing page (static HTML) |

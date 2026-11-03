@@ -1,4 +1,4 @@
-// Composes the announcement image marketing/disksweep-announcement.png (1080×1350 pt, rendered @2x)
+// Composes the announcement image marketing/moltdisk-announcement.png (1080×1350 pt, rendered @2x)
 // from the app icon and a screenshot. Usage: swift scripts/make-promo.swift
 import AppKit
 
@@ -33,7 +33,7 @@ let canvas = NSImage(size: NSSize(width: W, height: H), flipped: true) { _ in
 
     // Brand row.
     icon.draw(in: NSRect(x: pad - 18, y: pad - 18, width: 150, height: 150))
-    text("DiskSweep", 46, .bold, .white).draw(at: NSPoint(x: pad + 140, y: pad + 12))
+    text("MoltDisk", 46, .bold, .white).draw(at: NSPoint(x: pad + 140, y: pad + 12))
     text("A Mac cleaner made for developers", 23, .medium, hex(0x99F6E4)).draw(at: NSPoint(x: pad + 142, y: pad + 70))
 
     // Headline.
@@ -102,6 +102,6 @@ NSGraphicsContext.saveGraphicsState()
 NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
 canvas.draw(in: NSRect(x: 0, y: 0, width: W, height: H))
 NSGraphicsContext.restoreGraphicsState()
-let out = marketing.appendingPathComponent("disksweep-announcement.png")
+let out = marketing.appendingPathComponent("moltdisk-announcement.png")
 try! rep.representation(using: .png, properties: [:])!.write(to: out)
 print("Wrote \(out.path)")
