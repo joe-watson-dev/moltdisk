@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MoltDisk – Mac Cleaner for Developers: Free Up Disk Space</title>
 <meta name="description" content="Reclaim gigabytes eaten by node_modules, Xcode DerivedData, old iOS simulators, npm caches and unused VS Code extensions. Native, Trash-first, no subscription.">
-<meta name="keywords" content="mac cleaner, mac cleaner for developers, free up disk space mac, mac storage full, system data mac, clean up mac storage, clear cache mac, delete node_modules, clear xcode derived data, delete old ios simulators, xcrun simctl delete, clear npm cache, pnpm store prune, gradle cache cleanup, remove unused vs code extensions, cursor cache, jetbrains old versions cleanup, cleanmymac alternative, free mac cleaner, developer disk cleanup">
+<meta name="keywords" content="mac cleaner, mac cleaner for developers, free up disk space mac, mac storage full, system data mac, clean up mac storage, clear cache mac, delete node_modules, clear xcode derived data, delete old ios simulators, xcrun simctl delete, clear npm cache, pnpm store prune, gradle cache cleanup, remove unused vs code extensions, cursor cache, jetbrains old versions cleanup, cleanmymac alternative, uninstall mac apps completely, remove app leftovers mac, mac app uninstaller, free mac cleaner, developer disk cleanup">
 <meta name="author" content="Joe Watson">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://moltdisk.vercel.app/">
@@ -52,7 +52,8 @@
    "Clears npm, pnpm, Yarn, Homebrew, Gradle, Maven, CocoaPods, pip and Cargo caches",
    "Shows which VS Code, Cursor, Windsurf and JetBrains extensions you no longer use",
    "Locks caches of running apps and re-checks before deleting",
-   "Moves files to the Trash by default, with a safety label on every item"
+   "Moves files to the Trash by default, with a safety label on every item",
+   "Uninstalls apps completely, with the caches, settings and containers they keep in ~/Library, and finds leftovers of deleted apps"
   ],
   "offers": {
    "@type": "Offer",
@@ -76,6 +77,14 @@
     "acceptedAnswer": {
      "@type": "Answer",
      "text": "On a developer Mac, the space usually goes to things you never see: node_modules and build folders in old projects, Xcode DerivedData, iOS simulator runtimes, package manager caches and editor extensions. Together they often take more room than all your apps. MoltDisk finds them and shows the size of each one."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "How do I uninstall a Mac app completely?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Dragging an app to the Trash leaves its caches, settings and containers in ~/Library. In MoltDisk's Applications section, tick the app: it moves the app and every file named after it to the Trash. Leftovers lists files from apps you already deleted. Running apps are locked, and Apple's apps are never offered."
     }
    },
    {
@@ -379,6 +388,21 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
   .faq details p { padding-right: 0; font-size: 15px; }
 }
 
+
+/* Uninstall row: an app with the Library files that go with it, then leftovers of a deleted app. */
+.app-viz { width: 100%; max-width: 520px; display: grid; gap: 10px; }
+.app-row { display: grid; grid-template-columns: 22px 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--ui-1); box-shadow: 0 12px 30px -20px rgb(0 0 0 / .55); border-radius: 12px; padding: 12px 14px; color: var(--ui-ink); font-size: 13px; }
+.app-row .cb { width: 16px; height: 16px; border-radius: 4px; background: var(--ui-2); }
+.app-row.on .cb { background: #2563EB; }
+.app-row b { font-weight: 600; display: block; }
+.app-row small { display: block; color: var(--ui-muted); font-family: var(--mono); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.app-row .gb { font-family: var(--mono); font-size: 12.5px; }
+.app-tile { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; font-weight: 800; color: #fff; background: linear-gradient(160deg, var(--t), color-mix(in srgb, var(--t) 60%, #000)); }
+.app-tile.ghost { background: var(--ui-2); color: var(--ui-muted); box-shadow: inset 0 0 0 1.5px var(--ui-edge); }
+.app-files { display: grid; gap: 6px; margin: -2px 0 2px 48px; padding-left: 14px; border-left: 2px solid color-mix(in srgb, var(--c) 45%, transparent); font-family: var(--mono); font-size: 11.5px; color: var(--ui-muted); }
+.app-files span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 820px) { .app-files { margin-left: 18px; } .app-row small { white-space: normal; } }
+
 /* Explorer: pick a feature on the left, see its UI in one glass panel on the right */
 .explore { padding-block: 112px 0; display: grid; gap: 40px; }
 .ex-head { display: grid; gap: 18px; justify-items: center; text-align: center; }
@@ -664,7 +688,7 @@ html.js .sec.on { opacity: 1; transform: none; }
 .f-visual { transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease, border-color .5s; }
 .f-visual:hover .viz > * { transform: translateY(-4px); }
 .f-visual .viz > * { transition: transform .5s cubic-bezier(.2,.8,.2,1); }
-.phone, .ext-row, .lock-row, .trash-win .item { transition: transform .3s ease, border-color .3s; }
+.phone, .ext-row, .lock-row, .app-row, .trash-win .item { transition: transform .3s ease, border-color .3s; }
 .phone:hover { transform: translateY(-6px); }
 .put-back { transition: background .2s, color .2s; cursor: default; }
 .trash-win .item:hover .put-back { background: var(--brand); color: #04221F; border-color: var(--brand); }
@@ -793,6 +817,16 @@ html.js .sec.on { opacity: 1; transform: none; }
         <div class="lock-row dim"><span class="cb"></span><span>Chrome caches<small>Chrome is open</small></span><span class="pill lock">In use</span></div>
       </div></div></div>
   </section>
+  <section class="f-row sec" style="--c:#34D399" id="uninstall">
+    <div class="f-text reveal from-left"><h3>Uninstall apps completely</h3><p>Dragging an app to the Trash leaves its caches, settings and containers behind. MoltDisk removes the app with every file it keeps in your Library, and finds what already-deleted apps left behind.</p></div>
+    <div class="f-visual reveal from-right"><div class="viz"><div class="app-viz stagger">
+        <div class="app-row on"><span class="cb"></span><span class="app-tile" style="--t:#2D8CFF">Z</span><span><b>Zoom</b><small>/Applications/zoom.us.app + 9 related items</small></span><span class="gb">762 MB</span></div>
+        <div class="app-files">
+          <span>~/Library/Caches/us.zoom.xos</span><span>~/Library/Application Support/zoom.us</span><span>~/Library/Preferences/us.zoom.xos.plist</span><span>~/Library/Saved Application State/us.zoom.xos.savedState</span>
+        </div>
+        <div class="app-row"><span class="cb"></span><span class="app-tile ghost">?</span><span><b>Discord</b><small>Already deleted · 4 items left behind</small></span><span class="pill unused">Leftovers</span></div>
+      </div></div></div>
+  </section>
 
 </div>
 </div>
@@ -828,6 +862,10 @@ html.js .sec.on { opacity: 1; transform: none; }
       <details name="faq">
         <summary><h3>Why is my Mac storage full when I barely have any files?</h3></summary>
         <p>On a developer Mac, the space usually goes to things you never see: node_modules and build folders in old projects, Xcode DerivedData, iOS simulator runtimes, package manager caches and editor extensions. Together they often take more room than all your apps. MoltDisk finds them and shows the size of each one.</p>
+      </details>
+      <details name="faq">
+        <summary><h3>How do I uninstall a Mac app completely?</h3></summary>
+        <p>Dragging an app to the Trash leaves its caches, settings and containers in ~/Library. In MoltDisk&#x27;s Applications section, tick the app: it moves the app and every file named after it to the Trash. Leftovers lists files from apps you already deleted. Running apps are locked, and Apple&#x27;s apps are never offered.</p>
       </details>
       <details name="faq">
         <summary><h3>What is System Data on a Mac, and why is it so big?</h3></summary>

@@ -11,6 +11,7 @@ Requirements: macOS 15 Sequoia or later, Apple silicon. Price: free, no subscrip
 - iOS simulators and runtimes, removed with `xcrun simctl delete` / `simctl runtime delete`, never `rm`.
 - Package caches: npm, npx, pnpm, Yarn, Bun, Homebrew, CocoaPods, Gradle, Maven, NuGet, pub, Composer, Go, Cargo, pip, SwiftPM, Deno.
 - Editors and IDEs: VS Code, Cursor, Windsurf, Antigravity, Kiro, VSCodium and other VS Code-based editors (each extension with its real name and last use), JetBrains IDEs and Android Studio (old versions left after upgrades, caches, logs).
+- Applications: uninstalls apps completely (the app plus its caches, settings, containers, saved state and other files in ~/Library), and lists leftovers of apps that were already deleted. Running apps are locked; Apple apps are never offered.
 - App caches (Chrome, Brave, Edge, Arc, Slack, Discord, Notion and other Electron apps), logs, large files in Downloads, and the Trash.
 
 ## Safety
