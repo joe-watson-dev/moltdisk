@@ -42,7 +42,7 @@
   "applicationSubCategory": "Disk cleaner",
   "operatingSystem": "macOS 15 or later (Apple silicon)",
   "url": "https://moltdisk.vercel.app/",
-  "downloadUrl": "https://github.com/joe-watson-sbf/molt-disk/releases/latest/download/MoltDisk.zip",
+  "downloadUrl": "https://github.com/joe-watson-sbf/moltdisk/releases/latest/download/MoltDisk.zip",
   "image": "https://moltdisk.vercel.app/icon.png",
   "screenshot": "https://moltdisk.vercel.app/og-image.png",
   "featureList": [
@@ -65,7 +65,13 @@
    "name": "Joe Watson",
    "url": "https://github.com/joe-watson-sbf"
   },
-  "codeRepository": "https://github.com/joe-watson-sbf/molt-disk"
+  "codeRepository": "https://github.com/joe-watson-sbf/moltdisk",
+  "license": "https://polyformproject.org/licenses/noncommercial/1.0.0/",
+  "copyrightHolder": {
+   "@type": "Person",
+   "name": "Joe Watson"
+  },
+  "copyrightYear": 2026
  },
  {
   "@context": "https://schema.org",
@@ -574,6 +580,8 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
 .foot-links { display: flex; gap: 28px; font-size: 15px; color: var(--muted); }
 .foot-links a:hover { color: var(--ink); }
 .foot-bottom { display: flex; justify-content: center; gap: 6px 10px; flex-wrap: wrap; font-size: 13px; color: var(--muted); opacity: .75; text-align: center; }
+.foot-bottom a { color: inherit; text-decoration: underline; text-decoration-color: var(--glass-line); text-underline-offset: 3px; }
+.foot-bottom a:hover { color: var(--ink); }
 .foot-bottom span + span::before { content: "·"; margin-right: 10px; }
 
 /* Tablet and phone: the hero fills the screen, type scales down, the app runs edge to edge. */
@@ -911,7 +919,9 @@ html.js .sec.on { opacity: 1; transform: none; }
   <div class="wrap foot">
     <div class="foot-bottom">
       <span>Made by a developer, for developers.</span>
-      <span>© 2026 MoltDisk</span>
+      <span>© 2026 Joe Watson</span>
+      <span><a href="https://github.com/joe-watson-sbf/moltdisk/blob/main/LICENSE.md">PolyForm Noncommercial license</a></span>
+      <span><a href="https://github.com/joe-watson-sbf/moltdisk">Source on GitHub</a></span>
     </div>
   </div>
 </footer>
@@ -1075,7 +1085,7 @@ document.documentElement.classList.add("js");
   }
 
   // Where every "Download for Mac" button points. Set this to the real release URL (e.g. GitHub Releases).
-  const DOWNLOAD_URL = "https://github.com/joe-watson-sbf/molt-disk/releases/latest/download/MoltDisk.zip";
+  const DOWNLOAD_URL = "https://github.com/joe-watson-sbf/moltdisk/releases/latest/download/MoltDisk.zip";
   if (DOWNLOAD_URL) document.querySelectorAll(".js-download").forEach(a => { a.href = DOWNLOAD_URL; });
 
   // Storage demo: Sweep collapses the dev-junk segments one by one and counts the free space up. Plays once

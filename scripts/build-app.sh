@@ -29,6 +29,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleVersion</key><string>$BUILD</string>
     <key>LSMinimumSystemVersion</key><string>15.0</string>
     <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
+    <key>NSHumanReadableCopyright</key><string>Copyright © 2026 Joe Watson. Source-available under the PolyForm Noncommercial License 1.0.0.</string>
     <key>NSHighResolutionCapable</key><true/>
 </dict>
 </plist>

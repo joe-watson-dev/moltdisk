@@ -8,7 +8,7 @@
 Find the space your dev tools quietly eat, and clean it safely.</p>
 
 <p align="center">macOS 15 or later · Apple silicon · native SwiftUI<br>
-<a href="https://moltdisk.vercel.app">moltdisk.vercel.app</a></p>
+<a href="https://moltdisk.vercel.app">moltdisk.vercel.app</a> · <a href="LICENSE.md">source-available, noncommercial</a></p>
 
 ![MoltDisk showing VS Code extensions with sizes, last activity and labels like In use and Not used recently](marketing/screenshot-vscode-full.png)
 
@@ -24,9 +24,46 @@ MoltDisk scans a developer Mac for reclaimable space (`node_modules` and build f
 
 ## Install
 
-Download `MoltDisk.zip` from [Releases](https://github.com/joe-watson-sbf/molt-disk/releases), unzip it and move `MoltDisk.app` to Applications.
+Paste this in Terminal:
 
-The app is ad-hoc signed, not notarized, so the first time macOS will block it: open **System Settings › Privacy & Security** and click **Open Anyway**. To read the Trash and some caches, grant **Full Disk Access** in System Settings › Privacy & Security.
+```bash
+curl -fsSL https://moltdisk.vercel.app/install.sh | sh
+```
+
+It downloads the latest release from GitHub, puts `MoltDisk.app` in Applications (or `~/Applications` if you can't write to `/Applications`) and opens it. Run it again any time to update. Read the script first if you like: [`landing/install.sh`](landing/install.sh).
+
+Or with [Homebrew](https://brew.sh):
+
+```bash
+brew tap joe-watson-sbf/moltdisk https://github.com/joe-watson-sbf/moltdisk && brew install --cask moltdisk
+```
+
+Both always install the **latest** release. To update later, run the curl command again, or `brew upgrade --cask --greedy moltdisk` (the cask tracks the newest release, so Homebrew needs `--greedy` to reinstall it).
+
+**Why a Terminal command?** MoltDisk isn't signed by Apple yet (that needs a paid Apple Developer account). When you download an unsigned app in a browser, macOS tags it as coming from the internet and blocks it as being from an *unidentified developer*. A download made with `curl` isn't tagged, and the Homebrew cask removes the tag after installing, so the app opens normally. Everything it runs is in this repository.
+
+Requirements: a Mac with **Apple silicon** (M1 or newer) and **macOS 15 Sequoia** or later. The script checks both and stops with a clear message otherwise.
+
+<details>
+<summary>Other ways to install</summary>
+
+- **Downloaded in the browser and macOS blocks it?** Move `MoltDisk.app` to Applications, then run:
+
+  ```bash
+  xattr -dr com.apple.quarantine /Applications/MoltDisk.app
+  ```
+
+  This also fixes "MoltDisk is damaged and can't be opened". Or try to open the app once, then go to **System Settings › Privacy & Security** and click **Open Anyway** (needs an admin account).
+- **Build it yourself** (needs Xcode or the Command Line Tools; apps you build are never blocked):
+
+  ```bash
+  git clone https://github.com/joe-watson-sbf/moltdisk && cd moltdisk && ./scripts/build-app.sh && open build/MoltDisk.app
+  ```
+
+Work Macs managed by a company may block unsigned apps completely; only a notarized build gets past that.
+</details>
+
+To read the Trash and remove other apps' containers, grant **Full Disk Access** in System Settings › Privacy & Security.
 
 ## Build from source
 
@@ -102,3 +139,17 @@ This scans, ticks only that item, opens the confirmation sheet, moves the item t
 | `scripts/` | App build script, icon and marketing image generators |
 | `landing/` | Product landing page (static HTML) |
 | `marketing/` | Screenshot and promo images |
+
+## License
+
+MoltDisk is **source-available**, not open source: the code is public so you can read it, check exactly what it deletes, build it and change it, but you may not use it commercially.
+
+- **Allowed:** personal use on your own Mac (hobby projects, study, research, testing); use by charities, schools, research and public bodies; reading, building and changing the code; sharing it or your changes for free, as long as this license and its copyright notice go with it.
+- **Not allowed without written permission from the author:** selling MoltDisk or a changed version, charging for it or for access to it, putting it in a paid product or service, or any other commercial use. Using it for a company's business also counts as commercial use.
+
+The full terms are the [PolyForm Noncommercial License 1.0.0](LICENSE.md). If this summary and the license differ, the license applies.
+
+MoltDisk comes **as is, with no warranty**. It moves files to the Trash by default and checks every path before removing it, but you are responsible for what you choose to delete; keep backups of anything important.
+
+Copyright © 2026 Joe Watson. For commercial licensing, open an issue on GitHub.
+
