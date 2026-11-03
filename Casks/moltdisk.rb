@@ -1,13 +1,13 @@
 # Homebrew cask for MoltDisk. This repo doubles as its own tap:
-#   brew tap joe-watson-sbf/moltdisk https://github.com/joe-watson-sbf/moltdisk
-#   brew trust joe-watson-sbf/moltdisk
+#   brew tap joe-watson-dev/moltdisk https://github.com/joe-watson-dev/moltdisk
+#   brew trust joe-watson-dev/moltdisk
 #   brew install --cask moltdisk
 cask "moltdisk" do
   # Always the newest GitHub release; `brew upgrade --cask --greedy moltdisk` reinstalls it.
   version :latest
   sha256 :no_check
 
-  url "https://github.com/joe-watson-sbf/moltdisk/releases/latest/download/MoltDisk.zip"
+  url "https://github.com/joe-watson-dev/moltdisk/releases/latest/download/MoltDisk.zip"
   name "MoltDisk"
   desc "Mac cleaner for developers: dev caches, build folders, simulators and complete app uninstalls"
   homepage "https://moltdisk.vercel.app/"

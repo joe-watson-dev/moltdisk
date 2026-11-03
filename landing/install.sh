@@ -4,10 +4,10 @@
 #
 # MoltDisk isn't signed by Apple yet. A browser download is tagged as "from the internet" and macOS then
 # blocks it as coming from an unidentified developer; a download made with curl isn't tagged, so the app
-# opens normally. The source is public: https://github.com/joe-watson-sbf/moltdisk
+# opens normally. The source is public: https://github.com/joe-watson-dev/moltdisk
 set -eu
 
-URL="https://github.com/joe-watson-sbf/moltdisk/releases/latest/download/MoltDisk.zip"
+URL="https://github.com/joe-watson-dev/moltdisk/releases/latest/download/MoltDisk.zip"
 
 fail() { printf '\033[31m%s\033[0m\n' "$1" >&2; exit 1; }
 

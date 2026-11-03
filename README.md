@@ -35,7 +35,7 @@ It downloads the latest release from GitHub, puts `MoltDisk.app` in Applications
 Or with [Homebrew](https://brew.sh):
 
 ```bash
-brew tap joe-watson-sbf/moltdisk https://github.com/joe-watson-sbf/moltdisk && brew trust joe-watson-sbf/moltdisk && brew install --cask moltdisk
+brew tap joe-watson-dev/moltdisk https://github.com/joe-watson-dev/moltdisk && brew trust joe-watson-dev/moltdisk && brew install --cask moltdisk
 ```
 
 Homebrew asks you to trust a tap before it runs an outside recipe; `brew trust` does that for this one. Both commands always install the **latest** release. To update later, run the curl command again, or `brew upgrade --cask --greedy moltdisk` (the cask tracks the newest release, so Homebrew needs `--greedy` to reinstall it).
@@ -57,7 +57,7 @@ Requirements: a Mac with **Apple silicon** (M1 or newer) and **macOS 15 Sequoia*
 - **Build it yourself** (needs Xcode or the Command Line Tools; apps you build are never blocked):
 
   ```bash
-  git clone https://github.com/joe-watson-sbf/moltdisk && cd moltdisk && ./scripts/build-app.sh && open build/MoltDisk.app
+  git clone https://github.com/joe-watson-dev/moltdisk && cd moltdisk && ./scripts/build-app.sh && open build/MoltDisk.app
   ```
 
 Work Macs managed by a company may block unsigned apps completely; only a notarized build gets past that.
