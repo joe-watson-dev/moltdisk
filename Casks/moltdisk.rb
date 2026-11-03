@@ -1,5 +1,6 @@
 # Homebrew cask for MoltDisk. This repo doubles as its own tap:
 #   brew tap joe-watson-sbf/moltdisk https://github.com/joe-watson-sbf/moltdisk
+#   brew trust joe-watson-sbf/moltdisk
 #   brew install --cask moltdisk
 cask "moltdisk" do
   # Always the newest GitHub release; `brew upgrade --cask --greedy moltdisk` reinstalls it.

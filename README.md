@@ -35,10 +35,10 @@ It downloads the latest release from GitHub, puts `MoltDisk.app` in Applications
 Or with [Homebrew](https://brew.sh):
 
 ```bash
-brew tap joe-watson-sbf/moltdisk https://github.com/joe-watson-sbf/moltdisk && brew install --cask moltdisk
+brew tap joe-watson-sbf/moltdisk https://github.com/joe-watson-sbf/moltdisk && brew trust joe-watson-sbf/moltdisk && brew install --cask moltdisk
 ```
 
-Both always install the **latest** release. To update later, run the curl command again, or `brew upgrade --cask --greedy moltdisk` (the cask tracks the newest release, so Homebrew needs `--greedy` to reinstall it).
+Homebrew asks you to trust a tap before it runs an outside recipe; `brew trust` does that for this one. Both commands always install the **latest** release. To update later, run the curl command again, or `brew upgrade --cask --greedy moltdisk` (the cask tracks the newest release, so Homebrew needs `--greedy` to reinstall it).
 
 **Why a Terminal command?** MoltDisk isn't signed by Apple yet (that needs a paid Apple Developer account). When you download an unsigned app in a browser, macOS tags it as coming from the internet and blocks it as being from an *unidentified developer*. A download made with `curl` isn't tagged, and the Homebrew cask removes the tag after installing, so the app opens normally. Everything it runs is in this repository.
 
