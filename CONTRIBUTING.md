@@ -1,6 +1,7 @@
 # Contributing to MoltDisk
 
-Thanks for helping. MoltDisk deletes files, so every change is reviewed with safety first.
+Thanks for helping. MoltDisk deletes files, so every change is reviewed with safety first. Everyone taking part
+follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Setup
 

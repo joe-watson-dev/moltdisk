@@ -15,7 +15,7 @@ Find the space your dev tools quietly eat, and clean it safely.</p>
   <img src="https://img.shields.io/badge/Swift-SwiftUI-f05138?style=flat-square&logo=swift&logoColor=white" alt="Swift and SwiftUI">
 </p>
 
-<p align="center"><a href="https://moltdisk.vercel.app">Website</a> · <a href="#install">Install</a> · <a href="#safety">Safety</a> · <a href="SECURITY.md">Security</a> · <a href="CONTRIBUTING.md">Contributing</a></p>
+<p align="center"><a href="https://moltdisk.vercel.app">Website</a> · <a href="#install">Install</a> · <a href="#safety">Safety</a> · <a href="SECURITY.md">Security</a> · <a href="CONTRIBUTING.md">Contributing</a> · <a href="CODE_OF_CONDUCT.md">Code of conduct</a></p>
 
 ![MoltDisk showing VS Code extensions with sizes, last activity and labels like In use and Not used recently](marketing/screenshot-vscode-full.png)
 
