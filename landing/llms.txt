@@ -2,7 +2,7 @@
 
 > MoltDisk is a free, native macOS app that frees up disk space on developer Macs. It finds what developer tools leave behind (node_modules and build folders in any language, Xcode DerivedData, old iOS simulators and runtimes, package manager caches, unused editor extensions, app caches and logs), shows the size and a safety label for every item, and moves only what you tick to the Trash.
 
-Requirements: macOS 15 Sequoia or later, Apple silicon. Price: free, no subscription. License: source-available under PolyForm Noncommercial 1.0.0 (free for personal and noncommercial use; no selling or commercial use without permission). Install: `curl -fsSL https://moltdisk.vercel.app/install.sh | sh` or `brew tap joe-watson-dev/moltdisk https://github.com/joe-watson-dev/moltdisk && brew trust joe-watson-dev/moltdisk && brew install --cask moltdisk`. The app is ad-hoc signed, not notarized: the first time, open System Settings › Privacy & Security and click Open Anyway.
+Requirements: macOS 15 Sequoia or later, Apple silicon. Price: free, no subscription. License: open source under GPL-3.0; the MoltDisk name and icon are covered by a trademark policy. Install: `curl -fsSL https://moltdisk.vercel.app/install.sh | sh` or `brew tap joe-watson-dev/moltdisk https://github.com/joe-watson-dev/moltdisk && brew trust joe-watson-dev/moltdisk && brew install --cask moltdisk`. The app is ad-hoc signed, not notarized: the first time, open System Settings › Privacy & Security and click Open Anyway.
 
 ## What it cleans
 

@@ -7,8 +7,15 @@
 <p align="center"><b>The Mac cleaner made for developers.</b><br>
 Find the space your dev tools quietly eat, and clean it safely.</p>
 
-<p align="center">macOS 15 or later · Apple silicon · native SwiftUI<br>
-<a href="https://moltdisk.vercel.app">moltdisk.vercel.app</a> · <a href="LICENSE.md">source-available, noncommercial</a></p>
+<p align="center">
+  <a href="https://github.com/joe-watson-dev/moltdisk/releases/latest"><img src="https://img.shields.io/github/v/release/joe-watson-dev/moltdisk?label=version&style=flat-square&color=0d9488" alt="Latest version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL_v3-blue?style=flat-square" alt="License: GPL v3"></a>
+  <img src="https://img.shields.io/badge/macOS-15%2B-111?style=flat-square&logo=apple" alt="macOS 15 or later">
+  <img src="https://img.shields.io/badge/Apple_silicon-arm64-111?style=flat-square" alt="Apple silicon">
+  <img src="https://img.shields.io/badge/Swift-SwiftUI-f05138?style=flat-square&logo=swift&logoColor=white" alt="Swift and SwiftUI">
+</p>
+
+<p align="center"><a href="https://moltdisk.vercel.app">Website</a> · <a href="#install">Install</a> · <a href="#safety">Safety</a> · <a href="SECURITY.md">Security</a> · <a href="CONTRIBUTING.md">Contributing</a></p>
 
 ![MoltDisk showing VS Code extensions with sizes, last activity and labels like In use and Not used recently](marketing/screenshot-vscode-full.png)
 
@@ -142,14 +149,9 @@ This scans, ticks only that item, opens the confirmation sheet, moves the item t
 
 ## License
 
-MoltDisk is **source-available**, not open source: the code is public so you can read it, check exactly what it deletes, build it and change it, but you may not use it commercially.
+MoltDisk is open source under the [GPL-3.0](LICENSE).
+Any modified version you share must stay under the same license, with its source code available.
+If you fork MoltDisk, please use a different name and icon and credit MoltDisk as the original; see [TRADEMARK.md](TRADEMARK.md).
+MoltDisk is provided as is, without warranty of any kind.
 
-- **Allowed:** personal use on your own Mac (hobby projects, study, research, testing); use by charities, schools, research and public bodies; reading, building and changing the code; sharing it or your changes for free, as long as this license and its copyright notice go with it.
-- **Not allowed without written permission from the author:** selling MoltDisk or a changed version, charging for it or for access to it, putting it in a paid product or service, or any other commercial use. Using it for a company's business also counts as commercial use.
-
-The full terms are the [PolyForm Noncommercial License 1.0.0](LICENSE.md). If this summary and the license differ, the license applies.
-
-MoltDisk comes **as is, with no warranty**. It moves files to the Trash by default and checks every path before removing it, but you are responsible for what you choose to delete; keep backups of anything important.
-
-Copyright © 2026 Joe Watson. For commercial licensing, open an issue on GitHub.
-
+Copyright © 2026 Joe Watson.

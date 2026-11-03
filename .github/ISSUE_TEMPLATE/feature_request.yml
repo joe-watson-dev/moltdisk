@@ -1,0 +1,11 @@
+name: Feature request
+description: Something MoltDisk should find, clean or do
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you'd like
+      description: For new things to clean, say where they live (path) and how you know they're safe to remove.
+    validations:
+      required: true

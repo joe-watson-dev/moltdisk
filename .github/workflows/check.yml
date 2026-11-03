@@ -1,0 +1,33 @@
+# Builds MoltDisk and runs the safety-guard checks on every pull request and on main.
+# Make "Build and guard checks" a required status check in the main branch protection.
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Build and guard checks
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: swift build
+
+      - name: Safety-guard checks
+        run: |
+          swift run MoltDisk --check-guard | tee guard.txt
+          grep -q "All guard checks passed" guard.txt
+
+      - name: Install script syntax
+        run: sh -n landing/install.sh
